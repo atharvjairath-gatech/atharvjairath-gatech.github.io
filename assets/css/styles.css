@@ -12,19 +12,22 @@ body {
     scroll-behavior: smooth;
     background-color: #fff;
     transition: background-color 0.4s ease, color 0.4s ease;
-    padding-top: 4.5rem; /* Account for fixed navbar */
+    padding-top: 4.5rem;
+    /* Account for fixed navbar */
 }
 
 /* Adjust body padding for mobile */
 @media (max-width: 768px) {
     body {
-        padding-top: 5.5rem; /* Taller navbar on mobile */
+        padding-top: 5.5rem;
+        /* Taller navbar on mobile */
     }
 }
 
 @media (max-width: 480px) {
     body {
-        padding-top: 5rem; /* Adjusted for very small screens */
+        padding-top: 5rem;
+        /* Adjusted for very small screens */
     }
 }
 
@@ -101,7 +104,8 @@ body.dark-mode #theme-toggle:hover {
 }
 
 body.dark-mode #theme-toggle .theme-icon {
-    color: #ffd700; /* Sun color for dark mode */
+    color: #ffd700;
+    /* Sun color for dark mode */
 }
 
 /* Navigation */
@@ -113,19 +117,22 @@ body.dark-mode #theme-toggle .theme-icon {
     backdrop-filter: blur(5px);
     padding: 0.8rem 0;
     z-index: 1000;
-    height: 4.5rem; /* Fixed height instead of min-height */
+    height: 4.5rem;
+    /* Fixed height instead of min-height */
 }
 
 /* Adjust navbar for mobile */
 @media (max-width: 768px) {
     #navbar {
-        height: 5.5rem; /* Taller on mobile */
+        height: 5.5rem;
+        /* Taller on mobile */
     }
 }
 
 @media (max-width: 480px) {
     #navbar {
-        height: 5rem; /* Adjusted for very small screens */
+        height: 5rem;
+        /* Adjusted for very small screens */
     }
 }
 
@@ -137,7 +144,8 @@ body.dark-mode #theme-toggle .theme-icon {
     backdrop-filter: blur(5px);
     padding: 0.8rem 0;
     z-index: 1000;
-    height: 4.5rem; /* Fixed height instead of min-height */
+    height: 4.5rem;
+    /* Fixed height instead of min-height */
     display: flex;
     align-items: center;
 }
@@ -205,18 +213,83 @@ body.dark-mode #theme-toggle .theme-icon {
     justify-content: center;
 }
 
+#toggle-music svg {
+    color: #333;
+    transition: color 0.3s ease;
+}
+
 #toggle-music:hover {
     background-color: rgba(0, 0, 0, 0.1);
+}
+
+body.dark-mode #toggle-music svg {
+    color: #b0b0b0;
 }
 
 body.dark-mode #toggle-music:hover {
     background-color: rgba(255, 255, 255, 0.1);
 }
 
+body.dark-mode #toggle-music:hover svg {
+    color: #ffffff;
+}
+
 .music-playing #toggle-music svg {
     color: #007acc;
 }
 
+/* Vinyl Player Styles */
+.music-icon-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+}
+
+.vinyl-icon {
+    transition: all 0.5s ease;
+}
+
+.record-body {
+    transform-origin: 12px 12px;
+}
+
+.stylus-arm {
+    transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    transform-origin: 21px 3px;
+}
+
+/* Animation when music is playing */
+.music-playing .record-body {
+    animation: vinyl-spin 2s linear infinite;
+}
+
+.music-playing .stylus-arm {
+    transform: rotate(15deg);
+    color: #007acc;
+}
+
+@keyframes vinyl-spin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Dark mode adjustments */
+body.dark-mode .vinyl-icon {
+    color: #b0b0b0;
+}
+
+body.dark-mode .music-playing .vinyl-icon {
+    color: #4db8ff;
+}
+
+/* Make bars a bit thicker when playing */
 .ascii-cat {
     position: absolute;
     left: 1.5rem;
@@ -239,9 +312,11 @@ body.dark-mode #toggle-music:hover {
     0% {
         transform: translateY(-50%) translateX(0);
     }
+
     50% {
         transform: translateY(-50%) translateX(2px);
     }
+
     100% {
         transform: translateY(-50%) translateX(0);
     }
@@ -260,8 +335,10 @@ body.dark-mode .ascii-cat {
 
 /* Sections */
 .section {
-    min-height: 100vh; /* Now that body has padding, use full height */
-    padding: 2.5rem 1rem 1rem 1rem; /* Reduced top padding since body has padding */
+    min-height: 100vh;
+    /* Now that body has padding, use full height */
+    padding: 2.5rem 1rem 1rem 1rem;
+    /* Reduced top padding since body has padding */
     display: flex;
     align-items: center;
 }
@@ -269,15 +346,19 @@ body.dark-mode .ascii-cat {
 /* Adjust for mobile screens */
 @media (max-width: 768px) {
     .section {
-        min-height: 100vh; /* Full height on mobile */
-        padding: 2rem 1rem 1rem 1rem; /* Adjusted padding for mobile */
+        min-height: 100vh;
+        /* Full height on mobile */
+        padding: 2rem 1rem 1rem 1rem;
+        /* Adjusted padding for mobile */
     }
 }
 
 @media (max-width: 480px) {
     .section {
-        min-height: 100vh; /* Full height on small screens */
-        padding: 1.5rem 1rem 1rem 1rem; /* Adjusted padding for very small screens */
+        min-height: 100vh;
+        /* Full height on small screens */
+        padding: 1.5rem 1rem 1rem 1rem;
+        /* Adjusted padding for very small screens */
     }
 }
 
@@ -319,6 +400,7 @@ h2 {
         opacity: 0.8;
         transform: scale(1);
     }
+
     100% {
         opacity: 1;
         transform: scale(1.01);
@@ -356,7 +438,7 @@ h2 {
     max-width: 300px;
     height: auto;
     border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .profile-gif {
@@ -444,7 +526,8 @@ body.dark-mode .social-link:hover {
     content: '';
     position: absolute;
     left: 0;
-    top: 2.5rem; /* Slightly higher to align better */
+    top: 2.5rem;
+    /* Slightly higher to align better */
     width: 10px;
     height: 10px;
     border-radius: 50%;

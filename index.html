@@ -19,12 +19,21 @@
             <li><a href="#life">Life</a></li>
             <li>
                 <button id="toggle-music" title="Toggle background music">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
-                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
-                        <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
-                        <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
-                    </svg>
+                    <div class="music-icon-container">
+                        <svg class="vinyl-icon" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <g class="record-body">
+                                <circle cx="12" cy="12" r="10" stroke-width="2"></circle>
+                                <circle cx="12" cy="12" r="4" opacity="0.5"></circle>
+                                <circle cx="12" cy="12" r="1"></circle>
+                                <!-- Groove lines -->
+                                <path d="M20 12c0-4.4-3.6-8-8-8" opacity="0.3"></path>
+                                <path d="M4 12c0 4.4 3.6 8 8 8" opacity="0.3"></path>
+                            </g>
+                            <!-- Stylus/Needle arm stays stationary but swings in -->
+                            <path d="M21 3l-8 5" class="stylus-arm" stroke-width="2"></path>
+                        </svg>
+                    </div>
                 </button>
             </li>
             <li><a id="theme-toggle" href="#" title="Toggle dark mode">
@@ -58,11 +67,11 @@
             <div class="intro-content">
                 <div class="intro-text-and-image">
                     <div class="intro-text">
-                        <h1>Atharv Jairath</h1>
-                        <p>Hello! I'm a passionate Machine Learning Engineer with 5+ years of experience in AI/ML. I
-                            love creating solutions that make a difference.</p>
-                        <p>I specialize in NLP, Computer Vision, and ML systems and enjoy tackling complex challenges
-                            that push me to grow.</p>
+                        <h1>Hey, I'm Atharv! 👋</h1>
+                        <p>I'm a Machine Learning Engineer who's been building AI for 3+ years. I love creating things
+                            that actually help people.</p>
+                        <p>I'm really into NLP and Computer Vision, and I'm always looking for a good challenge to
+                            tackle next.</p>
                         <div class="social-links">
                             <a href="https://www.linkedin.com/in/atharv-jairath-99aa78118/" target="_blank"
                                 class="social-link">LinkedIn</a>
@@ -303,19 +312,6 @@
                     </ul>
                 </div>
 
-                <div class="hobby-card">
-                    <h3 class="hobby-title">Skills & Interests</h3>
-                    <ul>
-                        <li>Languages & Developer Tools: Python, C/C++, Git, GCP, AWS, VS Code, PyCharm, Jupyter
-                            Notebook</li>
-                        <li>Libraries: Pandas, NumPy, Matplotlib, Tensorflow, Keras, Scikit-learn, PyTorch, Seaborn,
-                            Selenium</li>
-                        <li>Coursework: Coding Ninjas - Data Science and Machine Learning, Python Data Structures and
-                            Algorithm, Udacity - AWS Machine Learning Foundations Course, Coursera - Deep Learning
-                            Specialization, Machine Learning by Stanford University, Coursera - Build Basic Generative
-                            Adversarial Networks, DataCamp - Introduction to Data Visualization with Seaborn</li>
-                    </ul>
-                </div>
             </div>
         </div>
     </section>
