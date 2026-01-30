@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Name | Personal Website</title>
+    <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav id="navbar">
+        <ul>
+            <li><a href="#intro">Intro</a></li>
+            <li><a href="#experience">Experience</a></li>
+            <li><a href="#projects">Projects</a></li>
+            <li><a href="#wins">Wins</a></li>
+            <li><a href="#life">Life</a></li>
+            <li>
+                <button id="toggle-music" title="Toggle background music">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+                        <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+                        <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
+                    </svg>
+                </button>
+            </li>
+            <li><a id="theme-toggle" href="#" title="Toggle dark mode">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="theme-icon">
+                    <circle cx="12" cy="12" r="5"></circle>
+                    <line x1="12" y1="1" x2="12" y2="3"></line>
+                    <line x1="12" y1="21" x2="12" y2="23"></line>
+                    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                    <line x1="1" y1="12" x2="3" y2="12"></line>
+                    <line x1="21" y1="12" x2="23" y2="12"></line>
+                    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                </svg>
+            </a></li>
+        </ul>
+        <div class="ascii-cat" id="cat-container">
+  /\\_/\\
+ ( ^.^ )
+  > ^ <
+        </div>
+        <audio id="bg-audio" loop>
+            <source src="assets/audio/aura-cosmic-lofi-aesthetic-music-179919.mp3" type="audio/mpeg">
+        </audio>
+    </nav>
+
+    <!-- Intro Section -->
+    <section id="intro" class="section">
+        <div class="container">
+            <div class="intro-content">
+                <div class="intro-text-and-image">
+                    <div class="intro-text">
+                        <h1>Atharv Jairath</h1>
+                        <p>Hello! I'm a passionate Machine Learning Engineer with 5+ years of experience in AI/ML. I love creating solutions that make a difference.</p>
+                        <p>I specialize in NLP, Computer Vision, and ML systems and enjoy tackling complex challenges that push me to grow.</p>
+                        <div class="social-links">
+                            <a href="https://www.linkedin.com/in/atharv-jairath-99aa78118/" target="_blank" class="social-link">LinkedIn</a>
+                            <a href="https://twitter.com/atharv_jairath" target="_blank" class="social-link">Twitter</a>
+                            <a href="assets/documents/Atharv_Jairath_Resume_ML__2025 (1).pdf" download class="social-link">Download Resume</a>
+                        </div>
+                    </div>
+                    <div class="intro-right-gif">
+                        <img src="assets/images/aesthetic-wallpapers-iphone-4k-16266.png" alt="Aesthetic wallpaper" class="right-gif">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Experience Section -->
+    <section id="experience" class="section">
+        <div class="container">
+            <h2>Experience</h2>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-details">
+                        <div class="timeline-date">Jan 2025 - Present</div>
+                    </div>
+                    <h3 class="timeline-title">Founding Machine Learning Engineer</h3>
+                    <div class="timeline-company">Honestly</div>
+                    <div class="timeline-location">Bangalore, India</div>
+                    <ul>
+                        <li>Built review analysis pipeline (fetching, cleaning, insights) for product pages using GPT4o</li>
+                        <li>Developed AI smart search and product recommendation multi-agent system using Elasticsearch, semantic search, Cohere rerank, and RRF using Langgraph</li>
+                    </ul>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-details">
+                        <div class="timeline-date">Aug 2023 - Jan 2025</div>
+                    </div>
+                    <h3 class="timeline-title">Machine Learning Engineer</h3>
+                    <div class="timeline-company">Entrupy</div>
+                    <div class="timeline-location">Bangalore, India</div>
+                    <ul>
+                        <li>Successfully optimized model pipeline for 2X faster inference</li>
+                        <li>Building a multi-region shoe segmentation model with HRnet backbone and custom decoder</li>
+                    </ul>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-details">
+                        <div class="timeline-date">Feb 2023 - July 2023</div>
+                    </div>
+                    <h3 class="timeline-title">Applied Scientist Intern</h3>
+                    <div class="timeline-company">Amazon</div>
+                    <div class="timeline-location">Bangalore, India</div>
+                    <ul>
+                        <li>Successfully identified key features strongly correlated with long-term user behavior among new-to-Amazon customers</li>
+                        <li>Developed accurate predictive models to forecast settlement probabilities</li>
+                        <li>Implemented reinforcement learning to optimize incentive allocation within budget, achieving increased customer settlement rates. The research paper on this work was published and presented at the Amazon Machine Learning Conference (AMLC)</li>
+                    </ul>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-details">
+                        <div class="timeline-date">Jan 2023 - Apr 2023</div>
+                    </div>
+                    <h3 class="timeline-title">Machine Learning Intern</h3>
+                    <div class="timeline-company">ExaWizards Inc.</div>
+                    <div class="timeline-location">Hyderabad, India</div>
+                    <ul>
+                        <li>Created synthetic data using Blended-latent Diffusion to generate anomalies for improved accuracy of anomaly detection models</li>
+                        <li>Investigated pose estimation on thermal images and the Segment anything Model (SAM) for improved object segmentation</li>
+                    </ul>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-details">
+                        <div class="timeline-date">Jul 2022 - Dec 2022</div>
+                    </div>
+                    <h3 class="timeline-title">Deep Learning Intern</h3>
+                    <div class="timeline-company">HyperVerge</div>
+                    <div class="timeline-location">Bengaluru, India</div>
+                    <ul>
+                        <li>Designed and executed a 1:N image classification system utilizing DBNet as the feature extractor for identity document verification across multiple geographic regions</li>
+                        <li>Successfully optimized image classification pipeline resulting in a 147% reduction in latency and a 103% decrease in GPU requirements</li>
+                    </ul>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-details">
+                        <div class="timeline-date">Nov 2021 - May 2022</div>
+                    </div>
+                    <h3 class="timeline-title">Computer Vision Intern</h3>
+                    <div class="timeline-company">Spyne</div>
+                    <div class="timeline-location">Gurgaon, India</div>
+                    <ul>
+                        <li>Researched and worked on problems like Image Segmentation, Watermark Removal and Image Classification for Zomato and Swiggy</li>
+                        <li>Implemented end-to-end deep learning models like U-Net, WDNet and CLIP, developed APIs and deployed them on Nvidia Triton</li>
+                    </ul>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-details">
+                        <div class="timeline-date">Oct 2021 - Jan 2022</div>
+                    </div>
+                    <h3 class="timeline-title">NLP Research Intern</h3>
+                    <div class="timeline-company">VoiceShop</div>
+                    <div class="timeline-location">New Delhi, India</div>
+                    <ul>
+                        <li>Implemented concepts from state-of-the-art research papers related to Open-Domain Conversation</li>
+                        <li>Contributed to open-source Facebook's (ParlAI) BlenderBot 2.0</li>
+                        <li>Deployed and finetuned GPT-J-6B on Amazon SageMaker utilizing Huggingface (DLCs)</li>
+                    </ul>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-details">
+                        <div class="timeline-date">Jul 2021 - Aug 2021</div>
+                    </div>
+                    <h3 class="timeline-title">Research Intern</h3>
+                    <div class="timeline-company">Dr. Akhilesh Das Gupta Institute of Technology</div>
+                    <div class="timeline-location">New Delhi, India</div>
+                    <ul>
+                        <li>Implemented Custom Cost function for Ensemble model to decrease RMSE by 18%</li>
+                        <li>Worked on a research project "A Data-driven Diabetes Predictive Model Using Novel Optimized Weighted Ensemble"</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Projects Section -->
+    <section id="projects" class="section">
+        <div class="container">
+            <h2>Projects</h2>
+            <div class="projects-grid">
+                <div class="project-card">
+                    <h3 class="project-title">Grammatical Error Correction Model with Dynamic Context Learning</h3>
+                    <p class="project-description">Used BERT model to learn optimal splits within the paragraph/document ensuring maximal contextual information is preserved in the resulting chunks. Achieved an improvement of 77%, 19.61%, and 10.49% F0.5 score on CoNLL-2014, BEA-Dev, and FCE-Test datasets respectively from current SOTA models. Paper accepted at BDA 2023.</p>
+                    <a href="#" class="project-link">View Project →</a>
+                </div>
+
+                <div class="project-card">
+                    <h3 class="project-title">Glycosylated Hemoglobin Prediction</h3>
+                    <p class="project-description">Introduced an optimized weighted ensemble model that predicts the risk of Type 2 Diabetes. Worked on improving the performance by developing custom cost function for weights. Technologies: Scikit-learn, Seaborn, Ensemble Learning, SciPy.</p>
+                    <a href="#" class="project-link">View Project →</a>
+                </div>
+
+                <div class="project-card">
+                    <h3 class="project-title">AI Image Caption Generator</h3>
+                    <p class="project-description">Developed an Encoder-Decoder model using CNN and LSTM to generate captions from an image. Encoded Images using InceptionV3 model and words using GloVe. Technologies: Keras, CNN, LSTM, GloVe, Transfer learning.</p>
+                    <a href="#" class="project-link">View Project →</a>
+                </div>
+
+                <div class="project-card">
+                    <h3 class="project-title">Smart India Hackathon Winner 2022</h3>
+                    <p class="project-description">Won Smart India Hackathon 2022 against the problem statement KK1182 (Shared usage of workshops/labs across india) held at IIT Guwahati.</p>
+                    <a href="#" class="project-link">View Project →</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Wins and Accomplishments Section -->
+    <section id="wins" class="section">
+        <div class="container">
+            <h2>Wins & Accomplishments</h2>
+            <div class="accomplishments-list">
+                <div class="accomplishment-card">
+                    <h3 class="accomplishment-title">Smart India Hackathon Winner 2022</h3>
+                    <p class="accomplishment-description">Won Smart India Hackathon 2022 against the problem statement KK1182 (Shared usage of workshops/labs across india) held at IIT Guwahati.</p>
+                </div>
+
+                <div class="accomplishment-card">
+                    <h3 class="accomplishment-title">Amazon ML Summer School 2022</h3>
+                    <p class="accomplishment-description">Among the top 3 students from ADGITM who made it to Amazon ML Summer School 2022.</p>
+                </div>
+
+                <div class="accomplishment-card">
+                    <h3 class="accomplishment-title">MLH's Neighborhood Hacks Winner</h3>
+                    <p class="accomplishment-description">Placed 1st among 300+ participants in MLH's Neighborhood Hacks with AasPaas.</p>
+                </div>
+
+                <div class="accomplishment-card">
+                    <h3 class="accomplishment-title">Coders vs COVID Hackathon Winner</h3>
+                    <p class="accomplishment-description">Secured 1st among 600+ participants in Coders vs COVID Hackathon with ArchSearch.</p>
+                </div>
+
+                <div class="accomplishment-card">
+                    <h3 class="accomplishment-title">HackISOLATION & Innerve Hackathon</h3>
+                    <p class="accomplishment-description">Winners of HackISOLATION by IOSD and 2nd runner-up in Innerve Hackathon, by IGDTUW.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Life Section -->
+    <section id="life" class="section">
+        <div class="container">
+            <h2>Life</h2>
+            <div class="life-content">
+                <div class="hobby-card">
+                    <h3 class="hobby-title">Positions of Responsibility</h3>
+                    <ul>
+                        <li>Machine Learning Lead, Google Developer Student Clubs: Organized workshops on Machine Learning, Supervised and Mentored team of 20+ members</li>
+                        <li>Founder, Younged: Founded an Ed-Tech platform to teach young aspirants Programming, Designed an efficient and beginner-friendly curriculum and Supervised Teachers</li>
+                        <li>Technical Lead, TutorateIndia: Managing technical execution to ensure adherence to budget, schedule, and scope. Designed, built, and maintaining a fully Functional LMS Website for the Startup</li>
+                    </ul>
+                </div>
+
+                <div class="hobby-card">
+                    <h3 class="hobby-title">Skills & Interests</h3>
+                    <ul>
+                        <li>Languages & Developer Tools: Python, C/C++, Git, GCP, AWS, VS Code, PyCharm, Jupyter Notebook</li>
+                        <li>Libraries: Pandas, NumPy, Matplotlib, Tensorflow, Keras, Scikit-learn, PyTorch, Seaborn, Selenium</li>
+                        <li>Coursework: Coding Ninjas - Data Science and Machine Learning, Python Data Structures and Algorithm, Udacity - AWS Machine Learning Foundations Course, Coursera - Deep Learning Specialization, Machine Learning by Stanford University, Coursera - Build Basic Generative Adversarial Networks, DataCamp - Introduction to Data Visualization with Seaborn</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script src="assets/js/script.js"></script>
+    <script>
+        // Animate the ASCII cat
+        document.addEventListener('DOMContentLoaded', function() {
+            const catContainer = document.getElementById('cat-container');
+            let isBlinking = false;
+            let isSmiling = false;
+
+            setInterval(() => {
+                // Random chance to blink
+                if (!isBlinking && Math.random() < 0.3) {
+                    isBlinking = true;
+                    catContainer.innerHTML = `
+  /\\_/\\
+ ( -.- )
+  > ^ <
+                    `;
+
+                    // Return to normal eyes after a short delay
+                    setTimeout(() => {
+                        if (isSmiling) {
+                            catContainer.innerHTML = `
+  /\\_/\\
+ ( ^.^ )
+  > : )
+                            `;
+                        } else {
+                            catContainer.innerHTML = `
+  /\\_/\\
+ ( ^.^ )
+  > ^ <
+                            `;
+                        }
+                        isBlinking = false;
+                    }, 200);
+                }
+
+                // Random chance to smile
+                if (!isBlinking && Math.random() < 0.1) {
+                    isSmiling = true;
+                    catContainer.innerHTML = `
+  /\\_/\\
+ ( ^.^ )
+  > : )
+                    `;
+
+                    // Return to normal smile after a delay
+                    setTimeout(() => {
+                        if (!isBlinking) {
+                            catContainer.innerHTML = `
+  /\\_/\\
+ ( ^.^ )
+  > ^ <
+                            `;
+                        }
+                        isSmiling = false;
+                    }, 1000);
+                }
+            }, 1000); // Check every second
+
+            // Also add floating animation via CSS class
+            catContainer.classList.add('floating-cat');
+        });
+    </script>
+</body>
+</html>
