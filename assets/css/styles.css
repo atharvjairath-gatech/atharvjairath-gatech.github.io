@@ -578,6 +578,52 @@ body.dark-mode .timeline-summary {
     flex-wrap: wrap;
 }
 
+.timeline-header-wrapper {
+    display: flex;
+    align-items: flex-start;
+    gap: 1.2rem;
+    margin-bottom: 0.5rem;
+}
+
+.company-logo {
+    width: 48px;
+    height: 48px;
+    object-fit: contain;
+    border-radius: 10px;
+    background: #fff;
+    padding: 4px;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    flex-shrink: 0;
+    transition: transform 0.3s ease;
+}
+
+.company-logo:hover {
+    transform: scale(1.05);
+}
+
+.timeline-header-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 48px;
+    /* Match logo height */
+}
+
+.timeline-header-content .timeline-title {
+    margin: 0;
+    line-height: 1.2;
+}
+
+.timeline-header-content .timeline-company {
+    margin: 2px 0 0 0;
+    line-height: 1.2;
+}
+
+body.dark-mode .company-logo {
+    background: #f0f0f0;
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
 /* Projects grid */
 .projects-grid {
     display: grid;
