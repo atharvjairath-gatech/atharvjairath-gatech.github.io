@@ -519,23 +519,8 @@ body.dark-mode .social-link:hover {
 
 .timeline-item {
     position: relative;
-    padding-left: 1.8rem;
+    padding-left: 0;
     margin-bottom: 1.5rem;
-}
-
-.timeline-item::before {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: 2.5rem;
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    background-color: #000;
-}
-
-body.dark-mode .timeline-item::before {
-    background-color: #e0e0e0;
 }
 
 .timeline-date {
@@ -572,6 +557,17 @@ body.dark-mode .timeline-company {
     color: #666;
     margin-bottom: 0.5rem;
     font-weight: 400;
+}
+
+.timeline-summary {
+    font-size: 1rem;
+    color: #444;
+    margin-bottom: 0.8rem;
+    font-weight: 400;
+}
+
+body.dark-mode .timeline-summary {
+    color: #cccccc;
 }
 
 .timeline-details {
@@ -732,7 +728,7 @@ body.dark-mode .timeline-company {
     }
 
     .timeline-item {
-        padding-left: 1.2rem;
+        padding-left: 0;
     }
 }
 
