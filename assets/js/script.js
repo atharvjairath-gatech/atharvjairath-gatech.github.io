@@ -124,6 +124,78 @@ document.addEventListener('DOMContentLoaded', function() {
     audio.volume = 0.3;
 });
 
+// Spotify now-playing widget
+document.addEventListener('DOMContentLoaded', function() {
+    const config = window.SUPABASE_CONFIG;
+    const widget = document.getElementById('spotify-now-playing');
+    const status = document.getElementById('spotify-status');
+    const track = document.getElementById('spotify-track');
+    const artist = document.getElementById('spotify-artist');
+    const albumArt = document.getElementById('spotify-album-art');
+
+    if (!widget || !status || !track || !artist || !albumArt) {
+        return;
+    }
+
+    const hasSupabase = config && config.url && config.anonKey && !config.anonKey.includes('PASTE_');
+
+    const setState = (state, statusText, trackText, artistText) => {
+        widget.dataset.status = state;
+        status.textContent = statusText;
+        track.textContent = trackText;
+        artist.textContent = artistText;
+        track.href = 'https://open.spotify.com/';
+    };
+
+    const loadNowPlaying = async () => {
+        if (!hasSupabase) {
+            setState('idle', 'Spotify', 'Add Supabase config to enable listening status', 'Minimal now-listening feed');
+            albumArt.removeAttribute('src');
+            return;
+        }
+
+        try {
+            const response = await fetch(`${config.url}/functions/v1/spotify-now-playing`, {
+                headers: {
+                    Authorization: `Bearer ${config.anonKey}`,
+                    apikey: config.anonKey
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error('Spotify function request failed.');
+            }
+
+            const data = await response.json();
+            if (!data.track) {
+                setState('paused', 'Spotify quiet', 'Nothing played recently', 'Paused, private, or offline');
+                albumArt.removeAttribute('src');
+                return;
+            }
+
+            if (data.track.albumArt) {
+                albumArt.src = data.track.albumArt;
+                albumArt.alt = `${data.track.title} album art`;
+            } else {
+                albumArt.removeAttribute('src');
+                albumArt.alt = '';
+            }
+            track.textContent = data.track.title;
+            track.href = data.track.url || 'https://open.spotify.com/';
+            artist.textContent = data.track.artists;
+            widget.dataset.status = data.isPlaying ? 'playing' : 'paused';
+            status.textContent = data.isPlaying ? 'Listening now' : 'Last played';
+        } catch (error) {
+            console.warn('Could not update Spotify widget.', error);
+            setState('error', 'Spotify unavailable', 'Could not load current track', 'Try again in a bit');
+            albumArt.removeAttribute('src');
+        }
+    };
+
+    loadNowPlaying();
+    setInterval(loadNowPlaying, 30000);
+});
+
 // Supabase guestbook and visit counter
 document.addEventListener('DOMContentLoaded', function() {
     const config = window.SUPABASE_CONFIG;
@@ -230,6 +302,51 @@ document.addEventListener('DOMContentLoaded', function() {
         );
     }
 
+    async function recordPageVisit(visitorId) {
+        const { error: rpcError } = await client.rpc('log_page_visit', {
+            input_visitor_id: visitorId,
+            input_page: 'home'
+        });
+
+        if (!rpcError) {
+            return true;
+        }
+
+        console.warn('Could not log visit through RPC. Trying table insert fallback.', rpcError);
+
+        const { error: insertError } = await client
+            .from('page_visits')
+            .insert({ visitor_id: visitorId, page: 'home' });
+
+        if (insertError) {
+            console.warn('Could not log visit through table fallback.', insertError);
+            return false;
+        }
+
+        return true;
+    }
+
+    async function loadVisitCount() {
+        const { data: rpcCount, error: rpcError } = await client.rpc('page_visit_count');
+
+        if (!rpcError && rpcCount !== null) {
+            return Number(rpcCount);
+        }
+
+        console.warn('Could not load visit count through RPC. Trying table count fallback.', rpcError);
+
+        const { count, error: countError } = await client
+            .from('page_visits')
+            .select('id', { count: 'exact', head: true });
+
+        if (countError) {
+            console.warn('Could not load visit count through table fallback.', countError);
+            return null;
+        }
+
+        return count;
+    }
+
     async function loadMessages() {
         const { data, error } = await client
             .from('guestbook')
@@ -268,21 +385,20 @@ document.addEventListener('DOMContentLoaded', function() {
 
             const visitKey = `visitLogged:${new Date().toISOString().slice(0, 10)}`;
             if (!localStorage.getItem(visitKey)) {
-                const { error: insertError } = await client.rpc('log_page_visit', {
-                    input_visitor_id: visitorId,
-                    input_page: 'home'
-                });
-                if (!insertError) {
+                const didLogVisit = await recordPageVisit(visitorId);
+                if (didLogVisit) {
                     localStorage.setItem(visitKey, 'true');
                 }
             }
 
-            const { data: count, error } = await client.rpc('page_visit_count');
-
-            if (!error && count !== null) {
-                visitorCount.textContent = Number(count).toLocaleString();
+            const count = await loadVisitCount();
+            if (count !== null) {
+                visitorCount.textContent = count.toLocaleString();
+            } else {
+                visitorCount.textContent = '--';
             }
         } catch (error) {
+            console.warn('Could not update visit counter.', error);
             visitorCount.textContent = '--';
         }
     }
