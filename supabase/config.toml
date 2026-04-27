@@ -1,1 +1,4 @@
 project_id = "batqakjngwjkrzexnioo"
+
+[functions.spotify-now-playing]
+verify_jwt = false

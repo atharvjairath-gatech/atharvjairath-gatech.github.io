@@ -124,6 +124,78 @@ document.addEventListener('DOMContentLoaded', function() {
     audio.volume = 0.3;
 });
 
+// Spotify now-playing widget
+document.addEventListener('DOMContentLoaded', function() {
+    const config = window.SUPABASE_CONFIG;
+    const widget = document.getElementById('spotify-now-playing');
+    const status = document.getElementById('spotify-status');
+    const track = document.getElementById('spotify-track');
+    const artist = document.getElementById('spotify-artist');
+    const albumArt = document.getElementById('spotify-album-art');
+
+    if (!widget || !status || !track || !artist || !albumArt) {
+        return;
+    }
+
+    const hasSupabase = config && config.url && config.anonKey && !config.anonKey.includes('PASTE_');
+
+    const setState = (state, statusText, trackText, artistText) => {
+        widget.dataset.status = state;
+        status.textContent = statusText;
+        track.textContent = trackText;
+        artist.textContent = artistText;
+        track.href = 'https://open.spotify.com/';
+    };
+
+    const loadNowPlaying = async () => {
+        if (!hasSupabase) {
+            setState('idle', 'Spotify', 'Add Supabase config to enable listening status', 'Minimal now-listening feed');
+            albumArt.removeAttribute('src');
+            return;
+        }
+
+        try {
+            const response = await fetch(`${config.url}/functions/v1/spotify-now-playing`, {
+                headers: {
+                    Authorization: `Bearer ${config.anonKey}`,
+                    apikey: config.anonKey
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error('Spotify function request failed.');
+            }
+
+            const data = await response.json();
+            if (!data.track) {
+                setState('paused', 'Spotify quiet', 'Nothing played recently', 'Paused, private, or offline');
+                albumArt.removeAttribute('src');
+                return;
+            }
+
+            if (data.track.albumArt) {
+                albumArt.src = data.track.albumArt;
+                albumArt.alt = `${data.track.title} album art`;
+            } else {
+                albumArt.removeAttribute('src');
+                albumArt.alt = '';
+            }
+            track.textContent = data.track.title;
+            track.href = data.track.url || 'https://open.spotify.com/';
+            artist.textContent = data.track.artists;
+            widget.dataset.status = data.isPlaying ? 'playing' : 'paused';
+            status.textContent = data.isPlaying ? 'Listening now' : 'Last played';
+        } catch (error) {
+            console.warn('Could not update Spotify widget.', error);
+            setState('error', 'Spotify unavailable', 'Could not load current track', 'Try again in a bit');
+            albumArt.removeAttribute('src');
+        }
+    };
+
+    loadNowPlaying();
+    setInterval(loadNowPlaying, 30000);
+});
+
 // Supabase guestbook and visit counter
 document.addEventListener('DOMContentLoaded', function() {
     const config = window.SUPABASE_CONFIG;
