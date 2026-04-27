@@ -518,7 +518,8 @@ body.dark-mode .social-link:hover {
 }
 
 .spotify-now-playing {
-    width: min(100%, 28rem);
+    width: fit-content;
+    max-width: min(100%, 28rem);
     margin-top: 2rem;
     padding: 0.85rem 0;
     display: grid;
@@ -526,6 +527,7 @@ body.dark-mode .social-link:hover {
     gap: 0.85rem;
     align-items: center;
     text-align: left;
+    justify-self: center;
 }
 
 .spotify-album-frame {
