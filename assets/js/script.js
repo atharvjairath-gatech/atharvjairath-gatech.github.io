@@ -1,5 +1,5 @@
 // Smooth scrolling for navigation links
-document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+document.querySelectorAll('a[href^="#"]:not([href="#"])').forEach(anchor => {
     anchor.addEventListener('click', function(e) {
         e.preventDefault();
 
@@ -122,4 +122,204 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Set initial volume to a comfortable level
     audio.volume = 0.3;
+});
+
+// Supabase guestbook and visit counter
+document.addEventListener('DOMContentLoaded', function() {
+    const config = window.SUPABASE_CONFIG;
+    const hasSupabase = window.supabase && config && !config.anonKey.includes('PASTE_');
+    const form = document.getElementById('guestbook-form');
+    const nameInput = document.getElementById('guestbook-name');
+    const messageInput = document.getElementById('guestbook-message');
+    const status = document.getElementById('guestbook-status');
+    const list = document.getElementById('guestbook-list');
+    const visitorCount = document.getElementById('visitor-count');
+
+    if (!form || !list) {
+        return;
+    }
+
+    if (!hasSupabase) {
+        status.textContent = 'Add your Supabase anon key in assets/js/supabase-config.js to enable the guestbook.';
+        list.innerHTML = '<div class="guestbook-empty">Notes will show up here once the guestbook is connected.</div>';
+        return;
+    }
+
+    const client = window.supabase.createClient(config.url, config.anonKey);
+
+    const escapeHtml = (value) => value
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;')
+        .replaceAll("'", '&#039;');
+
+    const formatDate = (value) => new Intl.DateTimeFormat(undefined, {
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric'
+    }).format(new Date(value));
+
+    const moderationMessage = 'Keep it friendly please. I am not saving NSFW notes here.';
+    const blockedWords = [
+        'anal', 'arse', 'asshole', 'bastard', 'bitch', 'blowjob', 'bollock', 'boner',
+        'boob', 'buttplug', 'clit', 'cock', 'cunt', 'dick', 'dildo', 'ejaculate',
+        'fag', 'fuck', 'fucker', 'fucking', 'genital', 'handjob', 'hentai', 'horny',
+        'incest', 'jizz', 'masturbate', 'milf', 'naked', 'nazi', 'nigger', 'nigga',
+        'nipple', 'nude', 'orgasm', 'penis', 'porn', 'porno', 'pussy', 'rape',
+        'rapist', 'retard', 'semen', 'sex', 'sexy', 'slut', 'sperm', 'testicle',
+        'tits', 'vagina', 'viagra', 'whore', 'xxx',
+        'aand', 'bawasir', 'bhenchod', 'bhadwa', 'bhosada', 'bhosadi', 'bhosadika',
+        'bhosdika', 'bhosdike', 'bsdk', 'chinal', 'chod', 'choda', 'chodna',
+        'chodu', 'chutiya', 'gaand', 'gand', 'gandu', 'harami', 'jhaat', 'jhant',
+        'kamina', 'kutti', 'lavda', 'lavde', 'lund', 'madarchod', 'randi',
+        'suar', 'tatti', 'bc', 'bkl', 'bkc', 'bklol', 'bsdk', 'mc', 'mkc',
+        'अश्लील', 'चोद', 'चोदा', 'चोदना', 'चूत', 'चूतिया', 'गांड', 'गंदू',
+        'झाट', 'लंड', 'मादरचोद', 'रंडी', 'हरामी'
+    ];
+    const blockedPhrases = [
+        'mother fuck', 'only fans', 'send nudes', 'suck my', 'baap ke lavde',
+        'behen chod', 'bhen chod', 'bhosdi ke', 'maa chod', 'madar chod'
+    ];
+    const leetMap = {
+        '0': 'o',
+        '1': 'i',
+        '3': 'e',
+        '4': 'a',
+        '5': 's',
+        '7': 't',
+        '@': 'a',
+        '$': 's',
+        '!': 'i'
+    };
+
+    const normalizeForModeration = (value) => value
+        .toLowerCase()
+        .normalize('NFKD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .replace(/[013457@$!]/g, character => leetMap[character] || character)
+        .replace(/(.)\1{2,}/g, '$1$1')
+        .replace(/[^\p{L}\p{N}\p{M}]+/gu, ' ')
+        .trim();
+
+    const hasUnsafeContent = (value) => {
+        const normalized = normalizeForModeration(value);
+        const compact = normalized.replace(/\s+/g, '');
+        const tokens = normalized.split(/\s+/).filter(Boolean);
+
+        return blockedPhrases.some(phrase => {
+            const normalizedPhrase = normalizeForModeration(phrase);
+            return normalized.includes(normalizedPhrase) || compact.includes(normalizedPhrase.replace(/\s+/g, ''));
+        }) || blockedWords.some(word => {
+            const normalizedWord = normalizeForModeration(word);
+            if (tokens.includes(normalizedWord)) {
+                return true;
+            }
+
+            return normalizedWord.length >= 4 && compact.includes(normalizedWord);
+        });
+    };
+
+    function createVisitorId() {
+        if (crypto.randomUUID) {
+            return crypto.randomUUID();
+        }
+
+        return '10000000-1000-4000-8000-100000000000'.replace(/[018]/g, character =>
+            (Number(character) ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> Number(character) / 4).toString(16)
+        );
+    }
+
+    async function loadMessages() {
+        const { data, error } = await client
+            .from('guestbook')
+            .select('name, message, created_at')
+            .order('created_at', { ascending: false })
+            .limit(12);
+
+        if (error) {
+            list.innerHTML = '<div class="guestbook-empty">Could not load notes right now. Please check back in a bit.</div>';
+            return;
+        }
+
+        if (!data.length) {
+            list.innerHTML = '<div class="guestbook-empty">No notes yet. Yours can be the first.</div>';
+            return;
+        }
+
+        list.innerHTML = data.map((entry, index) => `
+            <article class="guestbook-entry" style="--entry-index: ${index}">
+                <div class="guestbook-entry-meta">
+                    <strong>${escapeHtml(entry.name)}</strong>
+                    <time>${formatDate(entry.created_at)}</time>
+                </div>
+                <p>${escapeHtml(entry.message)}</p>
+            </article>
+        `).join('');
+    }
+
+    async function logVisit() {
+        try {
+            let visitorId = localStorage.getItem('visitorId');
+            if (!visitorId) {
+                visitorId = createVisitorId();
+                localStorage.setItem('visitorId', visitorId);
+            }
+
+            const visitKey = `visitLogged:${new Date().toISOString().slice(0, 10)}`;
+            if (!localStorage.getItem(visitKey)) {
+                const { error: insertError } = await client.rpc('log_page_visit', {
+                    input_visitor_id: visitorId,
+                    input_page: 'home'
+                });
+                if (!insertError) {
+                    localStorage.setItem(visitKey, 'true');
+                }
+            }
+
+            const { data: count, error } = await client.rpc('page_visit_count');
+
+            if (!error && count !== null) {
+                visitorCount.textContent = Number(count).toLocaleString();
+            }
+        } catch (error) {
+            visitorCount.textContent = '--';
+        }
+    }
+
+    form.addEventListener('submit', async function(event) {
+        event.preventDefault();
+
+        const name = nameInput.value.trim();
+        const message = messageInput.value.trim();
+
+        if (!name || !message) {
+            status.textContent = 'Add your name and a quick note.';
+            return;
+        }
+
+        if (hasUnsafeContent(`${name} ${message}`)) {
+            status.textContent = moderationMessage;
+            return;
+        }
+
+        status.textContent = 'Adding your note...';
+        form.querySelector('button').disabled = true;
+
+        const { error } = await client.from('guestbook').insert({ name, message });
+
+        form.querySelector('button').disabled = false;
+
+        if (error) {
+            status.textContent = 'Could not save that note. Mind trying again?';
+            return;
+        }
+
+        form.reset();
+        status.textContent = 'Thanks for leaving a note.';
+        await loadMessages();
+    });
+
+    loadMessages();
+    logVisit();
 });

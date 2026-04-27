@@ -441,6 +441,49 @@
         </div>
     </section>
 
+    <!-- Guestbook Section -->
+    <section id="guestbook" class="section guestbook-section">
+        <div class="container">
+            <div class="guestbook-header">
+                <div>
+                    <h2>Guestbook</h2>
+                    <p>Say hi, share a thought, or just leave your name.</p>
+                </div>
+                <div class="visitor-pill">
+                    <span id="visitor-count">--</span>
+                    <span>people stopped by</span>
+                </div>
+            </div>
+
+            <div class="guestbook-shell">
+                <form id="guestbook-form" class="guestbook-form">
+                    <div class="guestbook-fields">
+                        <label>
+                            <span>Name</span>
+                            <input id="guestbook-name" name="name" type="text" maxlength="40" autocomplete="name"
+                                placeholder="What should I call you?" required>
+                        </label>
+                        <label>
+                            <span>Message</span>
+                            <textarea id="guestbook-message" name="message" maxlength="300" rows="4"
+                                placeholder="Leave a little note..." required></textarea>
+                        </label>
+                    </div>
+                    <div class="guestbook-actions">
+                        <p id="guestbook-status" role="status"></p>
+                        <button type="submit">Leave a note</button>
+                    </div>
+                </form>
+
+                <div id="guestbook-list" class="guestbook-list" aria-live="polite">
+                    <div class="guestbook-empty">Loading notes...</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="assets/js/supabase-config.js"></script>
     <script src="assets/js/script.js"></script>
     <script>
         // Animate the ASCII cat
