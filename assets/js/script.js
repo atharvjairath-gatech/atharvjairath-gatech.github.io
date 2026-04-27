@@ -230,6 +230,51 @@ document.addEventListener('DOMContentLoaded', function() {
         );
     }
 
+    async function recordPageVisit(visitorId) {
+        const { error: rpcError } = await client.rpc('log_page_visit', {
+            input_visitor_id: visitorId,
+            input_page: 'home'
+        });
+
+        if (!rpcError) {
+            return true;
+        }
+
+        console.warn('Could not log visit through RPC. Trying table insert fallback.', rpcError);
+
+        const { error: insertError } = await client
+            .from('page_visits')
+            .insert({ visitor_id: visitorId, page: 'home' });
+
+        if (insertError) {
+            console.warn('Could not log visit through table fallback.', insertError);
+            return false;
+        }
+
+        return true;
+    }
+
+    async function loadVisitCount() {
+        const { data: rpcCount, error: rpcError } = await client.rpc('page_visit_count');
+
+        if (!rpcError && rpcCount !== null) {
+            return Number(rpcCount);
+        }
+
+        console.warn('Could not load visit count through RPC. Trying table count fallback.', rpcError);
+
+        const { count, error: countError } = await client
+            .from('page_visits')
+            .select('id', { count: 'exact', head: true });
+
+        if (countError) {
+            console.warn('Could not load visit count through table fallback.', countError);
+            return null;
+        }
+
+        return count;
+    }
+
     async function loadMessages() {
         const { data, error } = await client
             .from('guestbook')
@@ -268,21 +313,20 @@ document.addEventListener('DOMContentLoaded', function() {
 
             const visitKey = `visitLogged:${new Date().toISOString().slice(0, 10)}`;
             if (!localStorage.getItem(visitKey)) {
-                const { error: insertError } = await client.rpc('log_page_visit', {
-                    input_visitor_id: visitorId,
-                    input_page: 'home'
-                });
-                if (!insertError) {
+                const didLogVisit = await recordPageVisit(visitorId);
+                if (didLogVisit) {
                     localStorage.setItem(visitKey, 'true');
                 }
             }
 
-            const { data: count, error } = await client.rpc('page_visit_count');
-
-            if (!error && count !== null) {
-                visitorCount.textContent = Number(count).toLocaleString();
+            const count = await loadVisitCount();
+            if (count !== null) {
+                visitorCount.textContent = count.toLocaleString();
+            } else {
+                visitorCount.textContent = '--';
             }
         } catch (error) {
+            console.warn('Could not update visit counter.', error);
             visitorCount.textContent = '--';
         }
     }
