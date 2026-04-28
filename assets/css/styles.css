@@ -412,6 +412,10 @@ body.dark-mode .ascii-cat {
     padding: 0 2rem;
 }
 
+#intro .container {
+    max-width: 1080px;
+}
+
 h1 {
     font-size: 2.8rem;
     margin-bottom: 1.5rem;
@@ -452,11 +456,16 @@ h2 {
 }
 
 .intro-right-gif {
-    flex: 0 0 auto;
+    flex: 0 0 clamp(340px, 34vw, 460px);
+}
+
+.intro-mobile-gif {
+    display: none;
 }
 
 .right-gif {
-    max-width: 300px;
+    width: 100%;
+    max-width: 460px;
     height: auto;
     border-radius: 12px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
@@ -1094,15 +1103,7 @@ body.dark-mode .guestbook-actions button:hover {
 }
 
 /* Responsive design */
-@media (max-width: 768px) {
-    h1 {
-        font-size: 2.2rem;
-    }
-
-    h2 {
-        font-size: 1.6rem;
-    }
-
+@media (max-width: 900px) {
     .intro-text-and-image {
         flex-direction: column;
         text-align: center;
@@ -1116,11 +1117,33 @@ body.dark-mode .guestbook-actions button:hover {
     }
 
     .intro-right-gif {
+        flex-basis: auto;
         margin-top: 1rem;
+        width: min(100%, 460px);
+    }
+}
+
+@media (max-width: 768px) {
+    h1 {
+        font-size: 2.2rem;
+    }
+
+    h2 {
+        font-size: 1.6rem;
+    }
+
+    .intro-right-gif {
+        display: none;
+    }
+
+    .intro-mobile-gif {
+        display: block;
+        width: min(100%, 420px);
+        margin: -0.25rem auto 1.5rem;
     }
 
     .right-gif {
-        max-width: 220px;
+        max-width: 420px;
     }
 
     .projects-grid {
@@ -1162,6 +1185,6 @@ body.dark-mode .guestbook-actions button:hover {
     }
 
     .right-gif {
-        max-width: 180px;
+        max-width: 360px;
     }
 }
