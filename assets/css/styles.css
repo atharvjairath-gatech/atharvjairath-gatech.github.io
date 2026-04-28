@@ -539,6 +539,10 @@ body.dark-mode .social-link:hover {
     justify-self: center;
 }
 
+.spotify-now-playing[hidden] {
+    display: none;
+}
+
 .spotify-album-frame {
     position: relative;
     width: 3.4rem;

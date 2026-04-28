@@ -139,18 +139,16 @@ document.addEventListener('DOMContentLoaded', function() {
 
     const hasSupabase = config && config.url && config.anonKey && !config.anonKey.includes('PASTE_');
 
-    const setState = (state, statusText, trackText, artistText) => {
-        widget.dataset.status = state;
-        status.textContent = statusText;
-        track.textContent = trackText;
-        artist.textContent = artistText;
-        track.href = 'https://open.spotify.com/';
+    const hideWidget = () => {
+        widget.hidden = true;
+        widget.dataset.status = 'idle';
+        albumArt.removeAttribute('src');
+        albumArt.alt = '';
     };
 
     const loadNowPlaying = async () => {
         if (!hasSupabase) {
-            setState('idle', 'Spotify', 'Add Supabase config to enable listening status', 'Minimal now-listening feed');
-            albumArt.removeAttribute('src');
+            hideWidget();
             return;
         }
 
@@ -168,11 +166,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
             const data = await response.json();
             if (!data.track) {
-                setState('paused', 'Spotify quiet', 'Nothing played recently', 'Paused, private, or offline');
-                albumArt.removeAttribute('src');
+                hideWidget();
                 return;
             }
 
+            widget.hidden = false;
             if (data.track.albumArt) {
                 albumArt.src = data.track.albumArt;
                 albumArt.alt = `${data.track.title} album art`;
@@ -186,9 +184,7 @@ document.addEventListener('DOMContentLoaded', function() {
             widget.dataset.status = data.isPlaying ? 'playing' : 'paused';
             status.textContent = data.isPlaying ? 'Listening now' : 'Last played';
         } catch (error) {
-            console.warn('Could not update Spotify widget.', error);
-            setState('error', 'Spotify unavailable', 'Could not load current track', 'Try again in a bit');
-            albumArt.removeAttribute('src');
+            hideWidget();
         }
     };
 
