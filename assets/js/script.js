@@ -1,3 +1,75 @@
+// Google Analytics
+(function() {
+    const config = window.GOOGLE_ANALYTICS_CONFIG;
+    const measurementId = config && config.measurementId;
+    const hasMeasurementId = /^G-[A-Z0-9]+$/i.test(measurementId || '') && measurementId !== 'G-XXXXXXXXXX';
+
+    if (!hasMeasurementId) {
+        return;
+    }
+
+    const gtagScript = document.createElement('script');
+    gtagScript.async = true;
+    gtagScript.src = `https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(measurementId)}`;
+    document.head.appendChild(gtagScript);
+
+    window.dataLayer = window.dataLayer || [];
+    window.gtag = function() {
+        window.dataLayer.push(arguments);
+    };
+
+    window.gtag('js', new Date());
+    window.gtag('config', measurementId, {
+        page_path: window.location.pathname + window.location.search + window.location.hash
+    });
+})();
+
+function trackAnalyticsEvent(name, parameters = {}) {
+    if (typeof window.gtag !== 'function') {
+        return;
+    }
+
+    window.gtag('event', name, parameters);
+}
+
+function getClosestSectionId(element) {
+    return element.closest('.section')?.id || 'unknown';
+}
+
+function getReadableText(element) {
+    return element.textContent.trim().replace(/\s+/g, ' ');
+}
+
+const engagementState = {
+    maxScrollDepth: 0,
+    scrollMilestones: new Set(),
+    sectionViews: new Set(),
+    startTime: Date.now()
+};
+
+function trackTrafficAttribution() {
+    const params = new URLSearchParams(window.location.search);
+    const attribution = {
+        landing_path: window.location.pathname + window.location.search + window.location.hash,
+        referrer: document.referrer || 'direct',
+        utm_source: params.get('utm_source') || '',
+        utm_medium: params.get('utm_medium') || '',
+        utm_campaign: params.get('utm_campaign') || '',
+        utm_term: params.get('utm_term') || '',
+        utm_content: params.get('utm_content') || ''
+    };
+
+    const hasCampaignData = Object.values(attribution).some(Boolean);
+    if (!hasCampaignData || sessionStorage.getItem('trafficAttributionTracked') === 'true') {
+        return;
+    }
+
+    sessionStorage.setItem('trafficAttributionTracked', 'true');
+    trackAnalyticsEvent('traffic_attribution', attribution);
+}
+
+trackTrafficAttribution();
+
 // Smooth scrolling for navigation links
 document.querySelectorAll('a[href^="#"]:not([href="#"])').forEach(anchor => {
     anchor.addEventListener('click', function(e) {
@@ -11,7 +83,146 @@ document.querySelectorAll('a[href^="#"]:not([href="#"])').forEach(anchor => {
                 top: targetElement.offsetTop - 70, // Account for fixed navbar
                 behavior: 'smooth'
             });
+
+            trackAnalyticsEvent('section_navigation', {
+                section_id: targetId.replace('#', '')
+            });
         }
+    });
+});
+
+window.addEventListener('hashchange', function() {
+    if (typeof window.gtag !== 'function') {
+        return;
+    }
+
+    window.gtag('config', window.GOOGLE_ANALYTICS_CONFIG.measurementId, {
+        page_path: window.location.pathname + window.location.search + window.location.hash
+    });
+});
+
+document.querySelectorAll('a[target="_blank"], a[download]').forEach(link => {
+    link.addEventListener('click', function() {
+        const linkText = getReadableText(this);
+        const sectionId = getClosestSectionId(this);
+
+        if (this.hasAttribute('download')) {
+            trackAnalyticsEvent('resume_download', {
+                file_name: this.getAttribute('href').split('/').pop(),
+                section_id: sectionId
+            });
+            return;
+        }
+
+        if (this.classList.contains('social-link')) {
+            trackAnalyticsEvent('social_click', {
+                platform: linkText.toLowerCase(),
+                link_url: this.href,
+                section_id: sectionId
+            });
+            return;
+        }
+
+        trackAnalyticsEvent('link_click', {
+            link_url: this.href,
+            link_text: linkText,
+            section_id: sectionId,
+            outbound: Boolean(this.hostname && this.hostname !== window.location.hostname)
+        });
+    });
+});
+
+document.querySelectorAll('.project-link').forEach((link, index) => {
+    link.addEventListener('click', function() {
+        const card = this.closest('.project-card');
+        const title = card?.querySelector('.project-title');
+
+        trackAnalyticsEvent('project_click', {
+            project_name: title ? getReadableText(title) : `Project ${index + 1}`,
+            project_position: index + 1
+        });
+    });
+});
+
+document.querySelectorAll('.timeline-item').forEach((item, index) => {
+    item.addEventListener('click', function() {
+        const company = this.querySelector('.timeline-company');
+        const role = this.querySelector('.timeline-title');
+
+        trackAnalyticsEvent('experience_click', {
+            company: company ? getReadableText(company) : 'Unknown',
+            role: role ? getReadableText(role) : 'Unknown',
+            experience_position: index + 1
+        });
+    });
+});
+
+document.querySelectorAll('.accomplishment-card').forEach((card, index) => {
+    card.addEventListener('click', function() {
+        const title = this.querySelector('.accomplishment-title');
+
+        trackAnalyticsEvent('accomplishment_click', {
+            accomplishment_name: title ? getReadableText(title) : `Accomplishment ${index + 1}`,
+            accomplishment_position: index + 1
+        });
+    });
+});
+
+function trackScrollDepth() {
+    const documentHeight = document.documentElement.scrollHeight - window.innerHeight;
+
+    if (documentHeight <= 0) {
+        return;
+    }
+
+    const scrollDepth = Math.min(100, Math.round((window.scrollY / documentHeight) * 100));
+    engagementState.maxScrollDepth = Math.max(engagementState.maxScrollDepth, scrollDepth);
+
+    [25, 50, 75, 90, 100].forEach(milestone => {
+        if (scrollDepth >= milestone && !engagementState.scrollMilestones.has(milestone)) {
+            engagementState.scrollMilestones.add(milestone);
+            trackAnalyticsEvent('scroll_depth', {
+                percent_scrolled: milestone
+            });
+        }
+    });
+}
+
+let scrollDepthTimer;
+window.addEventListener('scroll', function() {
+    window.clearTimeout(scrollDepthTimer);
+    scrollDepthTimer = window.setTimeout(trackScrollDepth, 150);
+});
+
+if ('IntersectionObserver' in window) {
+    const sectionObserver = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+            if (!entry.isIntersecting || entry.intersectionRatio < 0.45) {
+                return;
+            }
+
+            const sectionId = entry.target.id;
+            if (engagementState.sectionViews.has(sectionId)) {
+                return;
+            }
+
+            engagementState.sectionViews.add(sectionId);
+            trackAnalyticsEvent('section_view', {
+                section_id: sectionId
+            });
+        });
+    }, {
+        threshold: [0.45]
+    });
+
+    document.querySelectorAll('.section').forEach(section => sectionObserver.observe(section));
+}
+
+window.addEventListener('pagehide', function() {
+    trackAnalyticsEvent('page_engagement_summary', {
+        engagement_seconds: Math.round((Date.now() - engagementState.startTime) / 1000),
+        max_scroll_depth: engagementState.maxScrollDepth,
+        sections_viewed: engagementState.sectionViews.size
     });
 });
 
@@ -59,8 +270,10 @@ themeToggle.addEventListener('click', function(e) {
     // Save the current theme to localStorage
     if (body.classList.contains('dark-mode')) {
         localStorage.setItem('theme', 'dark');
+        trackAnalyticsEvent('theme_change', { theme: 'dark' });
     } else {
         localStorage.setItem('theme', 'light');
+        trackAnalyticsEvent('theme_change', { theme: 'light' });
     }
 });
 
@@ -82,6 +295,9 @@ document.addEventListener('DOMContentLoaded', function() {
     toggleBtn.addEventListener('click', function(e) {
         e.preventDefault();
         e.stopPropagation(); // Prevent any default behavior
+        trackAnalyticsEvent('music_button_click', {
+            requested_state: isPlaying ? 'paused' : 'playing'
+        });
         toggleMusic(!isPlaying);
     });
 
@@ -92,6 +308,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     isPlaying = true;
                     document.body.classList.add('music-playing');
                     localStorage.setItem('musicEnabled', 'true');
+                    trackAnalyticsEvent('music_toggle', { state: 'playing' });
                 })
                 .catch(e => {
                     console.log("Audio play prevented by browser policy:", e);
@@ -117,6 +334,7 @@ document.addEventListener('DOMContentLoaded', function() {
             isPlaying = false;
             document.body.classList.remove('music-playing');
             localStorage.setItem('musicEnabled', 'false');
+            trackAnalyticsEvent('music_toggle', { state: 'paused' });
         }
     }
 
@@ -187,6 +405,14 @@ document.addEventListener('DOMContentLoaded', function() {
             hideWidget();
         }
     };
+
+    track.addEventListener('click', function() {
+        trackAnalyticsEvent('spotify_track_click', {
+            track_title: getReadableText(track),
+            artist: getReadableText(artist),
+            playback_state: widget.dataset.status || 'unknown'
+        });
+    });
 
     loadNowPlaying();
     setInterval(loadNowPlaying, 30000);
@@ -429,7 +655,16 @@ document.addEventListener('DOMContentLoaded', function() {
 
         form.reset();
         status.textContent = 'Thanks for leaving a note.';
+        trackAnalyticsEvent('guestbook_note_added');
         await loadMessages();
+    });
+
+    [nameInput, messageInput].forEach(input => {
+        input.addEventListener('focus', function() {
+            trackAnalyticsEvent('guestbook_form_start', {
+                field_name: this.name
+            });
+        }, { once: true });
     });
 
     loadMessages();
