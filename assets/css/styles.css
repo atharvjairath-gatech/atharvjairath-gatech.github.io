@@ -434,11 +434,13 @@ h1 {
 }
 
 h2 {
-    font-size: 1.8rem;
-    margin: 3rem 0 1.5rem;
-    font-weight: 400;
+    font-size: 1.5rem;
+    margin: 4.5rem 0 2.1rem;
+    font-weight: 700;
     position: relative;
-    letter-spacing: -0.01em;
+    letter-spacing: 0.1em;
+    line-height: 1.15;
+    text-transform: uppercase;
 }
 
 .intro-content {
@@ -1181,7 +1183,8 @@ body.dark-mode .guestbook-actions button:hover {
     }
 
     h2 {
-        font-size: 1.6rem;
+        font-size: 1.24rem;
+        margin: 3.5rem 0 1.7rem;
     }
 
     .container {
@@ -1239,7 +1242,7 @@ body.dark-mode .guestbook-actions button:hover {
     }
 
     h2 {
-        font-size: 1.5rem;
+        font-size: 1.08rem;
     }
 
     .right-gif {
