@@ -123,6 +123,18 @@ document.querySelectorAll('a[target="_blank"], a[download]').forEach(link => {
             return;
         }
 
+        if (this.classList.contains('writing-card')) {
+            const title = this.querySelector('.writing-title');
+
+            trackAnalyticsEvent('writing_click', {
+                post_title: title ? getReadableText(title) : linkText,
+                link_url: this.href,
+                section_id: sectionId,
+                outbound: Boolean(this.hostname && this.hostname !== window.location.hostname)
+            });
+            return;
+        }
+
         trackAnalyticsEvent('link_click', {
             link_url: this.href,
             link_text: linkText,
