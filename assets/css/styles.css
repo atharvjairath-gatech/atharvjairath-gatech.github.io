@@ -93,6 +93,8 @@ body.dark-mode #theme-toggle:hover {
 }
 
 .theme-icon {
+    /* #theme-toggle is an <a>, so without this it inherits the default link blue */
+    color: #333;
     transition: transform 0.4s ease;
 }
 
@@ -1357,5 +1359,219 @@ body.dark-mode .guestbook-actions button:hover {
 
     .right-gif {
         max-width: 360px;
+    }
+}
+
+/* ============================================================
+   Micro-interactions
+   ============================================================ */
+
+/* --- Nav icons: stroke "draw" reveal on hover / active --- */
+@media (hover: hover) {
+    .nav-icon path,
+    .nav-icon polyline,
+    .nav-icon rect,
+    .nav-icon circle {
+        transition: stroke-dashoffset 0.5s ease;
+    }
+
+    .nav-link:hover .nav-icon path,
+    .nav-link:hover .nav-icon polyline,
+    .nav-link:hover .nav-icon rect,
+    .nav-link:hover .nav-icon circle {
+        stroke-dasharray: 120;
+        stroke-dashoffset: 120;
+        animation: nav-icon-draw 0.6s ease forwards;
+    }
+}
+
+/* --- Desktop nav: align the music & theme icons with the text-label rhythm --- */
+/* The icon buttons carry extra padding for their hover circle, which makes the
+   visible gap around them read wider than the tight text links. Trim the padding
+   and pull them back in so every gap looks even. */
+@media (min-width: 769px) {
+    #toggle-music {
+        padding: 0.4rem;
+        margin-left: -0.4rem;
+    }
+
+    #theme-toggle {
+        padding: 0.4rem;
+        margin-left: -0.8rem;
+    }
+}
+
+/* Active section icon draws itself in (works on touch too) */
+#navbar a.active .nav-icon path,
+#navbar a.active .nav-icon polyline,
+#navbar a.active .nav-icon rect,
+#navbar a.active .nav-icon circle {
+    stroke-dasharray: 120;
+    animation: nav-icon-draw 0.6s ease forwards;
+}
+
+@keyframes nav-icon-draw {
+    from {
+        stroke-dashoffset: 120;
+    }
+
+    to {
+        stroke-dashoffset: 0;
+    }
+}
+
+/* --- Theme toggle: sun <-> crescent-moon morph --- */
+.theme-icon .sun-core {
+    transition: r 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.theme-icon .moon-cutter {
+    transition: cx 0.5s cubic-bezier(0.65, 0, 0.35, 1), cy 0.5s ease;
+}
+
+.theme-icon .sun-rays line {
+    transform-origin: 12px 12px;
+    transition: opacity 0.3s ease, transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Dark mode: rays retract, cutter slides in to carve a crescent, disc grows a touch */
+body.dark-mode .theme-icon .sun-rays line {
+    opacity: 0;
+    transform: scale(0.2) rotate(-45deg);
+}
+
+body.dark-mode .theme-icon .moon-cutter {
+    cx: 17;
+    cy: 8;
+}
+
+body.dark-mode .theme-icon .sun-core {
+    r: 6;
+}
+
+/* --- Theme switch: View Transitions clip-reveal of the new theme --- */
+::view-transition-old(root) {
+    animation: none;
+    z-index: 0;
+}
+
+::view-transition-new(root) {
+    z-index: 1;
+    animation: theme-reveal 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes theme-reveal {
+    from {
+        clip-path: circle(0 at var(--theme-x, 50%) var(--theme-y, 50%));
+    }
+
+    to {
+        clip-path: circle(var(--theme-r, 150%) at var(--theme-x, 50%) var(--theme-y, 50%));
+    }
+}
+
+/* --- Confetti burst (guestbook submit) --- */
+.confetti-piece {
+    position: fixed;
+    z-index: 9999;
+    width: 8px;
+    height: 8px;
+    pointer-events: none;
+    opacity: 1;
+    will-change: transform, opacity;
+    animation: confetti-fall var(--c-dur, 1100ms) cubic-bezier(0.2, 0.7, 0.3, 1) forwards;
+}
+
+@keyframes confetti-fall {
+    0% {
+        transform: translate(0, 0) rotate(0deg) scale(1);
+        opacity: 1;
+    }
+
+    100% {
+        transform: translate(var(--c-x, 0), var(--c-y, 140px)) rotate(var(--c-rot, 540deg)) scale(0.4);
+        opacity: 0;
+    }
+}
+
+/* --- Typewriter hero line --- */
+.typewriter .tw-caret {
+    display: inline-block;
+    width: 0.55ch;
+    height: 1.05em;
+    margin-left: 2px;
+    vertical-align: text-bottom;
+    background: currentColor;
+    animation: tw-blink 1.05s step-end infinite;
+}
+
+@keyframes tw-blink {
+    0% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0;
+    }
+}
+
+/* --- Cat: tiny pop when it reacts --- */
+.ascii-cat.cat-celebrate {
+    animation: cat-pop 0.5s ease;
+}
+
+@keyframes cat-pop {
+    0% {
+        transform: translateY(-50%) scale(1);
+    }
+
+    40% {
+        transform: translateY(-50%) scale(1.18);
+    }
+
+    100% {
+        transform: translateY(-50%) scale(1);
+    }
+}
+
+/* mobile cat is statically positioned (no translateY) */
+.ascii-cat.mobile-only.cat-celebrate {
+    animation: cat-pop-mobile 0.5s ease;
+}
+
+@keyframes cat-pop-mobile {
+    0%, 100% {
+        transform: scale(1);
+    }
+
+    40% {
+        transform: scale(1.18);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+    .nav-link:hover .nav-icon path,
+    .nav-link:hover .nav-icon polyline,
+    .nav-link:hover .nav-icon rect,
+    .nav-link:hover .nav-icon circle,
+    #navbar a.active .nav-icon path,
+    #navbar a.active .nav-icon polyline,
+    #navbar a.active .nav-icon rect,
+    #navbar a.active .nav-icon circle {
+        animation: none;
+        stroke-dashoffset: 0;
+    }
+
+    .confetti-piece,
+    .ascii-cat.cat-celebrate,
+    .ascii-cat.mobile-only.cat-celebrate,
+    .typewriter .tw-caret,
+    ::view-transition-new(root) {
+        animation: none;
+    }
+
+    .typewriter .tw-caret {
+        display: none;
     }
 }

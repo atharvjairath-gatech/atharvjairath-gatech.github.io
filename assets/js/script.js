@@ -274,20 +274,79 @@ if (currentTheme === 'dark' || (!currentTheme && prefersDarkScheme.matches)) {
     body.classList.add('dark-mode');
 }
 
-// Toggle dark mode
-themeToggle.addEventListener('click', function(e) {
-    e.preventDefault();
-    body.classList.toggle('dark-mode');
+const prefersReducedMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    // Save the current theme to localStorage
-    if (body.classList.contains('dark-mode')) {
+function applyTheme(goingDark) {
+    body.classList.toggle('dark-mode', goingDark);
+
+    if (goingDark) {
         localStorage.setItem('theme', 'dark');
         trackAnalyticsEvent('theme_change', { theme: 'dark' });
     } else {
         localStorage.setItem('theme', 'light');
         trackAnalyticsEvent('theme_change', { theme: 'light' });
     }
+}
+
+// Toggle dark mode with a radial clip-reveal of the new theme (View Transitions API).
+themeToggle.addEventListener('click', function(e) {
+    e.preventDefault();
+
+    const goingDark = !body.classList.contains('dark-mode');
+
+    if (prefersReducedMotion() || !document.startViewTransition) {
+        applyTheme(goingDark);
+        return;
+    }
+
+    // Anchor the reveal at the toggle button.
+    const rect = themeToggle.getBoundingClientRect();
+    const x = rect.left + rect.width / 2;
+    const y = rect.top + rect.height / 2;
+    const radius = Math.hypot(
+        Math.max(x, window.innerWidth - x),
+        Math.max(y, window.innerHeight - y)
+    );
+
+    const root = document.documentElement;
+    root.style.setProperty('--theme-x', `${x}px`);
+    root.style.setProperty('--theme-y', `${y}px`);
+    root.style.setProperty('--theme-r', `${Math.ceil(radius)}px`);
+
+    document.startViewTransition(() => applyTheme(goingDark));
 });
+
+// Small confetti burst from a screen point (used on guestbook submit).
+function launchConfetti(originX, originY) {
+    if (prefersReducedMotion()) {
+        return;
+    }
+
+    const colors = ['#007acc', '#4db8ff', '#ffd700', '#ff5f6d', '#62b4ff', '#7bed9f'];
+    const pieces = 22;
+
+    for (let i = 0; i < pieces; i += 1) {
+        const piece = document.createElement('span');
+        piece.className = 'confetti-piece';
+
+        const angle = (Math.PI * (0.15 + Math.random() * 0.7)) * -1; // upward fan
+        const distance = 60 + Math.random() * 90;
+        const dx = Math.cos(angle) * distance * (Math.random() < 0.5 ? -1 : 1);
+        const dy = Math.sin(angle) * distance - (40 + Math.random() * 60);
+
+        piece.style.left = `${originX}px`;
+        piece.style.top = `${originY}px`;
+        piece.style.background = colors[i % colors.length];
+        piece.style.borderRadius = Math.random() < 0.5 ? '50%' : '2px';
+        piece.style.setProperty('--c-x', `${dx.toFixed(1)}px`);
+        piece.style.setProperty('--c-y', `${(dy + 160).toFixed(1)}px`);
+        piece.style.setProperty('--c-rot', `${Math.round(Math.random() * 720 - 360)}deg`);
+        piece.style.setProperty('--c-dur', `${900 + Math.random() * 500}ms`);
+
+        document.body.appendChild(piece);
+        piece.addEventListener('animationend', () => piece.remove(), { once: true });
+    }
+}
 
 // Music player functionality
 document.addEventListener('DOMContentLoaded', function() {
@@ -668,6 +727,15 @@ document.addEventListener('DOMContentLoaded', function() {
         form.reset();
         status.textContent = 'Thanks for leaving a note.';
         trackAnalyticsEvent('guestbook_note_added');
+
+        // Celebrate: confetti from the button + a happy cat wink.
+        const submitBtn = form.querySelector('button');
+        const rect = submitBtn.getBoundingClientRect();
+        launchConfetti(rect.left + rect.width / 2, rect.top + rect.height / 2);
+        if (typeof window.catCelebrate === 'function') {
+            window.catCelebrate();
+        }
+
         await loadMessages();
     });
 
