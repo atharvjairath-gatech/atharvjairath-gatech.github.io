@@ -7,7 +7,7 @@
     <title>Atharv Jairath</title>
     <link rel="icon" href="assets/images/favicon.svg" type="image/svg+xml">
     <link rel="shortcut icon" href="assets/images/favicon.svg" type="image/svg+xml">
-    <link rel="stylesheet" href="assets/css/styles.css">
+    <link rel="stylesheet" href="assets/css/styles.css?v=7">
 </head>
 
 <body>
@@ -104,15 +104,22 @@
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                         class="theme-icon">
-                        <circle cx="12" cy="12" r="5"></circle>
-                        <line x1="12" y1="1" x2="12" y2="3"></line>
-                        <line x1="12" y1="21" x2="12" y2="23"></line>
-                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
-                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
-                        <line x1="1" y1="12" x2="3" y2="12"></line>
-                        <line x1="21" y1="12" x2="23" y2="12"></line>
-                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
-                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                        <mask id="theme-moon-mask">
+                            <rect x="0" y="0" width="24" height="24" fill="white"></rect>
+                            <circle class="moon-cutter" cx="30" cy="6" r="6" fill="black"></circle>
+                        </mask>
+                        <circle class="sun-core" cx="12" cy="12" r="5" fill="currentColor" stroke="none"
+                            mask="url(#theme-moon-mask)"></circle>
+                        <g class="sun-rays">
+                            <line x1="12" y1="1" x2="12" y2="3"></line>
+                            <line x1="12" y1="21" x2="12" y2="23"></line>
+                            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                            <line x1="1" y1="12" x2="3" y2="12"></line>
+                            <line x1="21" y1="12" x2="23" y2="12"></line>
+                            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                        </g>
                     </svg>
                 </a>
             </li>
@@ -542,70 +549,146 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="assets/js/supabase-config.js"></script>
     <script src="assets/js/analytics-config.js"></script>
-    <script src="assets/js/script.js"></script>
+    <script src="assets/js/script.js?v=4"></script>
     <script>
-        // Animate the ASCII cat
+        // Reactive ASCII cat: follows the cursor, blinks, and celebrates events.
         document.addEventListener('DOMContentLoaded', function () {
             const catContainers = document.querySelectorAll('.ascii-cat');
-            let isBlinking = false;
-            let isSmiling = false;
+            if (!catContainers.length) return;
 
-            // Initialize cat content immediately
-            const normalCat = ` /\\_/\\
-( ^.^ )
- > ^ < `;
-            catContainers.forEach(container => {
-                container.innerHTML = normalCat;
+            const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+            // Build a 3-line cat face from an eyes string (5 chars) and a mouth char.
+            const face = (eyes, mouth) => ` /\\_/\\\n(${eyes})\n > ${mouth} < `;
+
+            // Happy "^.^" eyes that shift within the face to show which way the cat looks.
+            const EYES = {
+                center: ' ^.^ ',
+                left: '^.^  ',
+                right: '  ^.^',
+                blink: ' -.- ',
+                happy: ' ^?^ '.replace('?', '▽'), // ^▽^
+                wink: ' ^.~ '
+            };
+
+            // Per-cat reactive state.
+            const cats = Array.from(catContainers).map(el => ({
+                el,
+                lookX: 'center',
+                lookUp: false,
+                blinking: false,
+                celebrating: false,
+                mouseX: window.innerWidth / 2,
+                mouseY: 0
+            }));
+
+            function render(cat) {
+                if (cat.celebrating) return; // celebration animation owns the face
+                let eyes;
+                let mouth = '^';
+                if (cat.blinking) {
+                    eyes = EYES.blink;
+                } else {
+                    eyes = EYES[cat.lookX] || EYES.center;
+                    if (cat.lookUp) mouth = '°'; // °
+                }
+                cat.el.textContent = face(eyes, mouth);
+            }
+
+            // Initial paint + floating animation.
+            cats.forEach(cat => {
+                render(cat);
+                cat.el.classList.add('floating-cat');
             });
 
-            setInterval(() => {
-                // Random chance to blink
-                if (!isBlinking && Math.random() < 0.3) {
-                    isBlinking = true;
-                    catContainers.forEach(container => {
-                        container.innerHTML = ` /\\_/\\
-( -.- )
- > ^ < `;
+            // Cursor tracking (skip when the user prefers reduced motion).
+            if (!reduceMotion && window.matchMedia('(hover: hover)').matches) {
+                let queued = false;
+                const update = () => {
+                    queued = false;
+                    cats.forEach(cat => {
+                        if (cat.celebrating || cat.blinking) return;
+                        const rect = cat.el.getBoundingClientRect();
+                        const cx = rect.left + rect.width / 2;
+                        const cy = rect.top + rect.height / 2;
+                        const dx = cat.mouseX - cx;
+                        const prevX = cat.lookX;
+                        const prevUp = cat.lookUp;
+                        cat.lookX = dx < -40 ? 'left' : dx > 40 ? 'right' : 'center';
+                        cat.lookUp = cat.mouseY < rect.top - 20;
+                        if (cat.lookX !== prevX || cat.lookUp !== prevUp) render(cat);
                     });
+                };
+                window.addEventListener('mousemove', (e) => {
+                    cats.forEach(cat => { cat.mouseX = e.clientX; cat.mouseY = e.clientY; });
+                    if (!queued) { queued = true; requestAnimationFrame(update); }
+                }, { passive: true });
+            }
 
-                    // Return to normal eyes after a short delay
-                    setTimeout(() => {
-                        catContainers.forEach(container => {
-                            if (isSmiling) {
-                                container.innerHTML = ` /\\_/\\
-( ^.^ )
- > : ) `;
-                            } else {
-                                container.innerHTML = normalCat;
-                            }
-                        });
-                        isBlinking = false;
-                    }, 200);
-                }
-
-                // Random chance to smile
-                if (!isBlinking && Math.random() < 0.1) {
-                    isSmiling = true;
-                    catContainers.forEach(container => {
-                        container.innerHTML = ` /\\_/\\
-( ^.^ )
- > : ) `;
+            // Occasional blink.
+            if (!reduceMotion) {
+                setInterval(() => {
+                    cats.forEach(cat => {
+                        if (cat.celebrating || cat.blinking || Math.random() > 0.35) return;
+                        cat.blinking = true;
+                        render(cat);
+                        setTimeout(() => { cat.blinking = false; render(cat); }, 180);
                     });
+                }, 2200);
+            }
 
-                    // Return to normal smile after a delay
+            // Public hook: make every cat do a happy wink (used on guestbook submit).
+            window.catCelebrate = function () {
+                cats.forEach(cat => {
+                    cat.celebrating = true;
+                    cat.el.classList.remove('cat-celebrate');
+                    void cat.el.offsetWidth; // restart pop animation
+                    cat.el.classList.add('cat-celebrate');
+                    cat.el.textContent = face(EYES.happy, '‿'); // ‿
+                    setTimeout(() => { cat.el.textContent = face(EYES.wink, '‿'); }, 260);
                     setTimeout(() => {
-                        if (!isBlinking) {
-                            catContainers.forEach(container => {
-                                container.innerHTML = normalCat;
-                            });
-                        }
-                        isSmiling = false;
-                    }, 1000);
-                }
-            }, 2000); // Check every 2 seconds
+                        cat.el.classList.remove('cat-celebrate');
+                        cat.celebrating = false;
+                        render(cat);
+                    }, 1400);
+                });
+            };
+        });
 
-            // Also add floating animation via CSS class
-            catContainers.forEach(container => container.classList.add('floating-cat'));
+        // Typewriter effect for the hero intro line.
+        document.addEventListener('DOMContentLoaded', function () {
+            const target = document.querySelector('#intro .intro-text p');
+            if (!target) return;
+
+            const fullText = target.textContent.trim().replace(/\s+/g, ' ');
+            const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+            target.classList.add('typewriter');
+            const textNode = document.createElement('span');
+            const caret = document.createElement('span');
+            caret.className = 'tw-caret';
+            caret.textContent = ' ';
+            target.textContent = '';
+            target.append(textNode, caret);
+
+            if (reduceMotion) {
+                textNode.textContent = fullText;
+                target.classList.add('tw-done');
+                return;
+            }
+
+            let i = 0;
+            const step = () => {
+                textNode.textContent = fullText.slice(0, i);
+                if (i < fullText.length) {
+                    i += 1;
+                    // Slightly varied cadence so it feels typed, not metronomic.
+                    setTimeout(step, 18 + Math.random() * 45);
+                } else {
+                    target.classList.add('tw-done');
+                }
+            };
+            setTimeout(step, 350);
         });
     </script>
 </body>
