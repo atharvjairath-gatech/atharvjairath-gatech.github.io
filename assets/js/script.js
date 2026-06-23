@@ -275,25 +275,31 @@ if (currentTheme === 'dark' || (!currentTheme && prefersDarkScheme.matches)) {
 }
 
 // Toggle dark mode
-themeToggle.addEventListener('click', function(e) {
-    e.preventDefault();
-    body.classList.toggle('dark-mode');
+if (themeToggle) {
+    themeToggle.addEventListener('click', function(e) {
+        e.preventDefault();
+        body.classList.toggle('dark-mode');
 
-    // Save the current theme to localStorage
-    if (body.classList.contains('dark-mode')) {
-        localStorage.setItem('theme', 'dark');
-        trackAnalyticsEvent('theme_change', { theme: 'dark' });
-    } else {
-        localStorage.setItem('theme', 'light');
-        trackAnalyticsEvent('theme_change', { theme: 'light' });
-    }
-});
+        // Save the current theme to localStorage
+        if (body.classList.contains('dark-mode')) {
+            localStorage.setItem('theme', 'dark');
+            trackAnalyticsEvent('theme_change', { theme: 'dark' });
+        } else {
+            localStorage.setItem('theme', 'light');
+            trackAnalyticsEvent('theme_change', { theme: 'light' });
+        }
+    });
+}
 
 // Music player functionality
 document.addEventListener('DOMContentLoaded', function() {
     const audio = document.getElementById('bg-audio');
     const toggleBtn = document.getElementById('toggle-music');
     let isPlaying = false;
+
+    if (!audio || !toggleBtn) {
+        return;
+    }
 
     // Try to autoplay music on page load
     const musicEnabled = localStorage.getItem('musicEnabled');
@@ -352,6 +358,197 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Set initial volume to a comfortable level
     audio.volume = 0.3;
+});
+
+// Markdown notes renderer
+document.addEventListener('DOMContentLoaded', function() {
+    const noteContainer = document.getElementById('markdown-note');
+    const noteButtons = document.querySelectorAll('.note-picker[data-note-src]');
+
+    if (!noteContainer) {
+        return;
+    }
+
+    const fallbackMarkdown = `# Transformer Interview Notes
+
+Quick revision sheet for attention, code shape checks, and the kind of math that usually shows up in ML interviews.
+
+![Animated desk setup](assets/images/decorative.gif)
+
+## Core Idea
+
+Self-attention lets every token compare itself with every other token:
+
+$$
+\\mathrm{Attention}(Q, K, V) = \\mathrm{softmax}\\left(\\frac{QK^\\top}{\\sqrt{d_k}}\\right)V
+$$
+
+The \\( \\sqrt{d_k} \\) term keeps logits from getting too large as dimensionality grows.
+
+## Shape Debugging
+
+\`\`\`python
+import torch
+
+batch, tokens, model_dim, heads = 2, 8, 64, 4
+head_dim = model_dim // heads
+x = torch.randn(batch, tokens, model_dim)
+q = x.view(batch, tokens, heads, head_dim).transpose(1, 2)
+print(q.shape)
+\`\`\`
+`;
+
+    function createMarkdownRenderer() {
+        if (!window.markdownit) {
+            return null;
+        }
+
+        const markdown = window.markdownit({
+            html: false,
+            linkify: true,
+            typographer: true,
+            highlight(code, language) {
+                const canHighlight = window.hljs && language && window.hljs.getLanguage(language);
+                const highlighted = canHighlight
+                    ? window.hljs.highlight(code, { language }).value
+                    : markdown.utils.escapeHtml(code);
+                const className = language ? ` class="hljs language-${markdown.utils.escapeHtml(language)}"` : ' class="hljs"';
+
+                return `<pre><code${className}>${highlighted}</code></pre>`;
+            }
+        });
+
+        if (window.texmath && window.katex) {
+            markdown.use(window.texmath, {
+                engine: window.katex,
+                delimiters: 'dollars',
+                katexOptions: {
+                    throwOnError: false
+                }
+            });
+        }
+
+        return markdown;
+    }
+
+    const renderer = createMarkdownRenderer();
+
+    async function loadMarkdown(source) {
+        try {
+            const response = await fetch(source);
+            if (!response.ok) {
+                throw new Error(`Could not load ${source}`);
+            }
+
+            return await response.text();
+        } catch (error) {
+            console.warn('Using fallback markdown note.', error);
+            return fallbackMarkdown;
+        }
+    }
+
+    async function renderNote(source) {
+        noteContainer.innerHTML = '<div class="note-loading">Loading markdown note...</div>';
+        const markdown = await loadMarkdown(source);
+
+        if (!renderer) {
+            noteContainer.innerHTML = `<pre>${markdown
+                .replaceAll('&', '&amp;')
+                .replaceAll('<', '&lt;')
+                .replaceAll('>', '&gt;')}</pre>`;
+            return;
+        }
+
+        noteContainer.innerHTML = renderer.render(markdown);
+        window.dispatchEvent(new Event('resize'));
+    }
+
+    if (noteButtons.length) {
+        noteButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const source = this.dataset.noteSrc;
+                noteButtons.forEach(item => item.classList.remove('active'));
+                this.classList.add('active');
+
+                trackAnalyticsEvent('note_open', {
+                    note_source: source
+                });
+
+                renderNote(source);
+            });
+        });
+
+        renderNote(noteButtons[0].dataset.noteSrc);
+        return;
+    }
+
+    renderNote(noteContainer.dataset.noteSrc || 'notes/transformer-interview-notes.md');
+});
+
+// Notes read-progress rail
+document.addEventListener('DOMContentLoaded', function() {
+    const rail = document.querySelector('.notes-scroll-rail');
+    const article = document.getElementById('markdown-note');
+
+    if (!rail || !article) {
+        return;
+    }
+
+    const railMarkerCount = 15;
+    const railMarkers = Array.from({ length: railMarkerCount }, () => {
+        const marker = document.createElement('span');
+        rail.appendChild(marker);
+        return marker;
+    });
+
+    function getReadableBlocks() {
+        return [...article.querySelectorAll('h1, h2, p, blockquote, pre, table, ul, ol, img')]
+            .filter(element => element.getBoundingClientRect().height > 0);
+    }
+
+    function getCurrentBlockIndex(blocks) {
+        const readingLine = window.innerHeight * 0.42;
+        let currentIndex = 0;
+
+        blocks.forEach((block, index) => {
+            if (block.getBoundingClientRect().top <= readingLine) {
+                currentIndex = index;
+            }
+        });
+
+        return currentIndex;
+    }
+
+    function updateNotesScrollProgress() {
+        const blocks = getReadableBlocks();
+        if (!blocks.length) {
+            return;
+        }
+
+        const currentIndex = getCurrentBlockIndex(blocks);
+        const maxIndex = Math.max(1, blocks.length - 1);
+        const activePosition = (currentIndex / maxIndex) * (railMarkerCount - 1);
+
+        railMarkers.forEach((marker, markerIndex) => {
+            const paragraphProgress = markerIndex / (railMarkerCount - 1);
+            const blockIndex = Math.round(paragraphProgress * maxIndex);
+            const blockExists = blockIndex < blocks.length;
+            const distance = Math.abs(markerIndex - activePosition);
+            const scale = blockExists ? Math.max(0.2, 1 - distance * 0.2) : 0;
+            const opacity = blockExists ? Math.max(0.08, 0.72 - distance * 0.14) : 0;
+            const height = blockExists ? Math.max(1, 2.2 - distance * 0.32) : 1;
+            const y = markerIndex * 8.8;
+
+            marker.style.setProperty('--rail-scale', scale.toFixed(4));
+            marker.style.setProperty('--rail-opacity', opacity.toFixed(4));
+            marker.style.setProperty('--rail-height', `${height.toFixed(2)}px`);
+            marker.style.setProperty('--rail-y', `${y.toFixed(2)}px`);
+        });
+    }
+
+    updateNotesScrollProgress();
+    window.addEventListener('scroll', updateNotesScrollProgress, { passive: true });
+    window.addEventListener('resize', updateNotesScrollProgress);
 });
 
 // Spotify now-playing widget
