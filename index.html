@@ -11,11 +11,12 @@
 </head>
 
 <body>
+    <a class="skip-link" href="#intro">Skip to content</a>
     <!-- Navigation -->
-    <nav id="navbar">
+    <nav id="navbar" aria-label="Main navigation">
         <ul>
             <li>
-                <a href="#intro" class="nav-link">
+                <a href="#intro" class="nav-link" aria-label="Intro">
                     <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
                         fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                         stroke-linejoin="round">
@@ -26,7 +27,7 @@
                 </a>
             </li>
             <li>
-                <a href="#writing" class="nav-link">
+                <a href="#writing" class="nav-link" aria-label="Writing">
                     <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
                         fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                         stroke-linejoin="round">
@@ -37,7 +38,7 @@
                 </a>
             </li>
             <li>
-                <a href="#projects" class="nav-link">
+                <a href="#projects" class="nav-link" aria-label="Projects">
                     <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
                         fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                         stroke-linejoin="round">
@@ -49,7 +50,7 @@
                 </a>
             </li>
             <li>
-                <a href="#experience" class="nav-link">
+                <a href="#experience" class="nav-link" aria-label="Experience">
                     <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
                         fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                         stroke-linejoin="round">
@@ -60,7 +61,7 @@
                 </a>
             </li>
             <li>
-                <a href="#wins" class="nav-link">
+                <a href="#wins" class="nav-link" aria-label="Wins">
                     <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
                         fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                         stroke-linejoin="round">
@@ -72,7 +73,7 @@
                 </a>
             </li>
             <li>
-                <a href="#life" class="nav-link">
+                <a href="#life" class="nav-link" aria-label="Life">
                     <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
                         fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                         stroke-linejoin="round">
@@ -83,7 +84,7 @@
                 </a>
             </li>
             <li>
-                <button id="toggle-music" title="Toggle background music">
+                <button id="toggle-music" type="button" title="Play background music" aria-label="Play background music" aria-pressed="false">
                     <div class="music-icon-container">
                         <svg class="vinyl-icon" width="24" height="24" viewBox="0 0 24 24" fill="none"
                             stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
@@ -100,7 +101,7 @@
                 </button>
             </li>
             <li>
-                <a id="theme-toggle" href="#" title="Toggle dark mode">
+                <button id="theme-toggle" type="button" title="Toggle dark mode" aria-label="Toggle dark mode" aria-pressed="false">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                         class="theme-icon">
@@ -114,24 +115,26 @@
                         <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
                         <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
                     </svg>
-                </a>
+                </button>
             </li>
         </ul>
-        <div class="ascii-cat navbar-only" id="cat-nav"></div>
-        <audio id="bg-audio" loop>
+        <div class="ascii-cat navbar-only" id="cat-nav" aria-hidden="true"></div>
+        <audio id="bg-audio" loop preload="none">
             <source src="assets/audio/aura-cosmic-lofi-aesthetic-music-179919.mp3" type="audio/mpeg">
         </audio>
     </nav>
 
+    <main>
     <!-- Intro Section -->
-    <section id="intro" class="section">
+    <section id="intro" class="section" tabindex="-1">
         <div class="container">
             <div class="intro-content">
                 <div class="intro-text-and-image">
                     <div class="intro-text">
-                        <div class="ascii-cat mobile-only" id="cat-intro"></div>
-                        <h1>Hey, I'm Atharv! 👋</h1>
+                        <div class="ascii-cat mobile-only" id="cat-intro" aria-hidden="true"></div>
+                        <h1>Hey, I'm Atharv! <span class="hello-wave" aria-hidden="true">👋</span></h1>
                         <div class="intro-mobile-gif">
+                            <div class="portrait-stars" aria-hidden="true"><span>✧</span><span>✦</span></div>
                             <img src="assets/images/ascii.gif" alt="Atharv as ASCII art" class="right-gif">
                         </div>
                         <p>I'm a Machine Learning Engineer who's been building AI for 3+ years. I love creating
@@ -164,6 +167,7 @@
                         </div>
                     </div>
                     <div class="intro-right-gif">
+                        <div class="portrait-stars" aria-hidden="true"><span>✧</span><span>✦</span><span>✧</span></div>
                         <img src="assets/images/ascii.gif" alt="Atharv as ASCII art" class="right-gif">
                     </div>
                 </div>
@@ -198,6 +202,42 @@
         </div>
     </section>
 
+    <!-- Projects Section -->
+    <section id="projects" class="section">
+        <div class="container">
+            <h2>Projects</h2>
+            <div class="projects-grid">
+                <div class="project-card">
+                    <h3 class="project-title">Grammatical Error Correction Model with Dynamic Context Learning</h3>
+                    <p class="project-description">Used BERT model to learn optimal splits within the paragraph/document
+                        ensuring maximal contextual information is preserved in the resulting chunks. Achieved an
+                        improvement of 77%, 19.61%, and 10.49% F0.5 score on CoNLL-2014, BEA-Dev, and FCE-Test datasets
+                        respectively from current SOTA models. Paper accepted at BDA 2023.</p>
+                </div>
+
+                <div class="project-card">
+                    <h3 class="project-title">Glycosylated Hemoglobin Prediction</h3>
+                    <p class="project-description">Introduced an optimized weighted ensemble model that predicts the
+                        risk of Type 2 Diabetes. Worked on improving the performance by developing custom cost function
+                        for weights. Technologies: Scikit-learn, Seaborn, Ensemble Learning, SciPy.</p>
+                </div>
+
+                <div class="project-card">
+                    <h3 class="project-title">AI Image Caption Generator</h3>
+                    <p class="project-description">Developed an Encoder-Decoder model using CNN and LSTM to generate
+                        captions from an image. Encoded Images using InceptionV3 model and words using GloVe.
+                        Technologies: Keras, CNN, LSTM, GloVe, Transfer learning.</p>
+                </div>
+
+                <div class="project-card">
+                    <h3 class="project-title">Smart India Hackathon Winner 2022</h3>
+                    <p class="project-description">Won Smart India Hackathon 2022 against the problem statement KK1182
+                        (Shared usage of workshops/labs across india) held at IIT Guwahati.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- Experience Section -->
     <section id="experience" class="section">
         <div class="container">
@@ -208,7 +248,7 @@
                         <div class="timeline-date">Jan 2025 - Present</div>
                     </div>
                     <div class="timeline-header-wrapper">
-                        <img src="assets/images/company/askhonestlyai_logo.jpeg" alt="Firi logo" class="company-logo">
+                        <img src="assets/images/company/askhonestlyai_logo.jpeg" alt="Firi logo" class="company-logo" loading="lazy" width="48" height="48">
                         <div class="timeline-header-content">
                             <h3 class="timeline-title">Founding Machine Learning Engineer</h3>
                             <div class="timeline-company">Firi</div>
@@ -232,7 +272,7 @@
                         <div class="timeline-date">Aug 2023 - Jan 2025</div>
                     </div>
                     <div class="timeline-header-wrapper">
-                        <img src="assets/images/company/entrupy_logo.jpeg" alt="Entrupy logo" class="company-logo">
+                        <img src="assets/images/company/entrupy_logo.jpeg" alt="Entrupy logo" class="company-logo" loading="lazy" width="48" height="48">
                         <div class="timeline-header-content">
                             <h3 class="timeline-title">Machine Learning Engineer</h3>
                             <div class="timeline-company">Entrupy</div>
@@ -246,12 +286,15 @@
                     </ul>
                 </div>
 
+                <details class="earlier-experience">
+                    <summary><span>Earlier experience <span class="detail-count">6 roles · 2021–2023</span></span><span class="disclosure-icon" aria-hidden="true">+</span></summary>
+                    <div class="earlier-roles">
                 <div class="timeline-item">
                     <div class="timeline-details">
                         <div class="timeline-date">Feb 2023 - July 2023</div>
                     </div>
                     <div class="timeline-header-wrapper">
-                        <img src="assets/images/company/amazon_logo.jpeg" alt="Amazon logo" class="company-logo">
+                        <img src="assets/images/company/amazon_logo.jpeg" alt="Amazon logo" class="company-logo" loading="lazy" width="48" height="48">
                         <div class="timeline-header-content">
                             <h3 class="timeline-title">Applied Scientist Intern</h3>
                             <div class="timeline-company">Amazon</div>
@@ -273,7 +316,7 @@
                     </div>
                     <div class="timeline-header-wrapper">
                         <img src="assets/images/company/exawizards_inc_logo.jpeg" alt="ExaWizards Inc. logo"
-                            class="company-logo">
+                            class="company-logo" loading="lazy" width="48" height="48">
                         <div class="timeline-header-content">
                             <h3 class="timeline-title">Machine Learning Intern</h3>
                             <div class="timeline-company">ExaWizards Inc.</div>
@@ -294,7 +337,7 @@
                     </div>
                     <div class="timeline-header-wrapper">
                         <img src="assets/images/company/hyperverge_logo.jpeg" alt="HyperVerge logo"
-                            class="company-logo">
+                            class="company-logo" loading="lazy" width="48" height="48">
                         <div class="timeline-header-content">
                             <h3 class="timeline-title">Deep Learning Intern</h3>
                             <div class="timeline-company">HyperVerge</div>
@@ -313,7 +356,7 @@
                         <div class="timeline-date">Nov 2021 - May 2022</div>
                     </div>
                     <div class="timeline-header-wrapper">
-                        <img src="assets/images/company/spyne_ai_logo.jpeg" alt="Spyne logo" class="company-logo">
+                        <img src="assets/images/company/spyne_ai_logo.jpeg" alt="Spyne logo" class="company-logo" loading="lazy" width="48" height="48">
                         <div class="timeline-header-content">
                             <h3 class="timeline-title">Computer Vision Intern</h3>
                             <div class="timeline-company">Spyne</div>
@@ -333,7 +376,7 @@
                         <div class="timeline-date">Oct 2021 - Jan 2022</div>
                     </div>
                     <div class="timeline-header-wrapper">
-                        <img src="assets/images/company/voiceshop.jpeg" alt="VoiceShop logo" class="company-logo">
+                        <img src="assets/images/company/voiceshop.jpeg" alt="VoiceShop logo" class="company-logo" loading="lazy" width="48" height="48">
                         <div class="timeline-header-content">
                             <h3 class="timeline-title">NLP Research Intern</h3>
                             <div class="timeline-company">VoiceShop</div>
@@ -352,7 +395,7 @@
                         <div class="timeline-date">Jul 2021 - Aug 2021</div>
                     </div>
                     <div class="timeline-header-wrapper">
-                        <img src="assets/images/company/adgips_logo.jpeg" alt="ADGITM logo" class="company-logo">
+                        <img src="assets/images/company/adgips_logo.jpeg" alt="ADGITM logo" class="company-logo" loading="lazy" width="48" height="48">
                         <div class="timeline-header-content">
                             <h3 class="timeline-title">Research Intern</h3>
                             <div class="timeline-company">Dr. Akhilesh Das Gupta Institute of Technology</div>
@@ -365,46 +408,8 @@
                         <li>Researched better ways to predict diabetes using data-driven weighted ensembles</li>
                     </ul>
                 </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Projects Section -->
-    <section id="projects" class="section">
-        <div class="container">
-            <h2>Projects</h2>
-            <div class="projects-grid">
-                <div class="project-card">
-                    <h3 class="project-title">Grammatical Error Correction Model with Dynamic Context Learning</h3>
-                    <p class="project-description">Used BERT model to learn optimal splits within the paragraph/document
-                        ensuring maximal contextual information is preserved in the resulting chunks. Achieved an
-                        improvement of 77%, 19.61%, and 10.49% F0.5 score on CoNLL-2014, BEA-Dev, and FCE-Test datasets
-                        respectively from current SOTA models. Paper accepted at BDA 2023.</p>
-                    <a href="#" class="project-link">View Project →</a>
-                </div>
-
-                <div class="project-card">
-                    <h3 class="project-title">Glycosylated Hemoglobin Prediction</h3>
-                    <p class="project-description">Introduced an optimized weighted ensemble model that predicts the
-                        risk of Type 2 Diabetes. Worked on improving the performance by developing custom cost function
-                        for weights. Technologies: Scikit-learn, Seaborn, Ensemble Learning, SciPy.</p>
-                    <a href="#" class="project-link">View Project →</a>
-                </div>
-
-                <div class="project-card">
-                    <h3 class="project-title">AI Image Caption Generator</h3>
-                    <p class="project-description">Developed an Encoder-Decoder model using CNN and LSTM to generate
-                        captions from an image. Encoded Images using InceptionV3 model and words using GloVe.
-                        Technologies: Keras, CNN, LSTM, GloVe, Transfer learning.</p>
-                    <a href="#" class="project-link">View Project →</a>
-                </div>
-
-                <div class="project-card">
-                    <h3 class="project-title">Smart India Hackathon Winner 2022</h3>
-                    <p class="project-description">Won Smart India Hackathon 2022 against the problem statement KK1182
-                        (Shared usage of workshops/labs across india) held at IIT Guwahati.</p>
-                    <a href="#" class="project-link">View Project →</a>
-                </div>
+                    </div>
+                </details>
             </div>
         </div>
     </section>
@@ -484,7 +489,7 @@
                 </div>
 
                 <div class="hobby-card">
-                    <h3 class="hobby-title">Misc</h3>
+                    <h3 class="hobby-title">Away from the keyboard</h3>
                     <ul>
                         <li>I love playing badminton! If you're around the Bangalore HSR area and want to play, hit me
                             up-I'd love to connect.</li>
@@ -497,6 +502,7 @@
             </div>
         </div>
     </section>
+
 
     <!-- Guestbook Section -->
     <section id="guestbook" class="section guestbook-section">
@@ -539,6 +545,12 @@
         </div>
     </section>
 
+    </main>
+    <footer class="site-footer container">
+        <span>Atharv Jairath</span>
+        <a href="#intro">Back to top <span aria-hidden="true">↑</span></a>
+    </footer>
+
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="assets/js/supabase-config.js"></script>
     <script src="assets/js/analytics-config.js"></script>
@@ -557,6 +569,8 @@
             catContainers.forEach(container => {
                 container.innerHTML = normalCat;
             });
+
+            if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
             setInterval(() => {
                 // Random chance to blink

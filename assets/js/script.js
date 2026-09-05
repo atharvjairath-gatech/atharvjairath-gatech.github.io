@@ -80,9 +80,12 @@ document.querySelectorAll('a[href^="#"]:not([href="#"])').forEach(anchor => {
 
         if (targetElement) {
             window.scrollTo({
-                top: targetElement.offsetTop - 70, // Account for fixed navbar
-                behavior: 'smooth'
+                top: targetElement.getBoundingClientRect().top + window.scrollY - (window.innerWidth <= 768 ? 24 : 90),
+                behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth'
             });
+
+            history.pushState(null, '', targetId);
+            if (this.classList.contains('skip-link')) targetElement.focus({ preventScroll: true });
 
             trackAnalyticsEvent('section_navigation', {
                 section_id: targetId.replace('#', '')
@@ -238,29 +241,33 @@ window.addEventListener('pagehide', function() {
     });
 });
 
-// Highlight active section in navbar
-window.addEventListener('scroll', function() {
-    const sections = document.querySelectorAll('.section');
-    const navLinks = document.querySelectorAll('#navbar a');
-
-    let current = '';
-
-    sections.forEach(section => {
-        const sectionTop = section.offsetTop;
-        const sectionHeight = section.clientHeight;
-
-        if (pageYOffset >= (sectionTop - 100) && pageYOffset < (sectionTop + sectionHeight - 100)) {
-            current = section.getAttribute('id');
-        }
+// Keep navigation stable on load, scroll, and when older roles expand.
+const navLinks = [...document.querySelectorAll('#navbar .nav-link')];
+const navSections = navLinks.map(link => document.querySelector(link.getAttribute('href')));
+function updateActiveSection() {
+    let current = 'intro';
+    navSections.forEach(section => {
+        if (section.getBoundingClientRect().top <= 150) current = section.id;
     });
-
     navLinks.forEach(link => {
-        link.classList.remove('active');
-        if (link.getAttribute('href') === `#${current}`) {
-            link.classList.add('active');
-        }
+        const active = link.getAttribute('href') === `#${current}`;
+        link.classList.toggle('active', active);
+        if (active) link.setAttribute('aria-current', 'location');
+        else link.removeAttribute('aria-current');
     });
-});
+}
+let navFramePending = false;
+window.addEventListener('scroll', () => {
+    if (navFramePending) return;
+    navFramePending = true;
+    requestAnimationFrame(() => {
+        updateActiveSection();
+        navFramePending = false;
+    });
+}, { passive: true });
+window.addEventListener('resize', updateActiveSection);
+document.querySelector('.earlier-experience')?.addEventListener('toggle', updateActiveSection);
+updateActiveSection();
 
 // Dark mode toggle functionality
 const themeToggle = document.getElementById('theme-toggle');
@@ -274,10 +281,20 @@ if (currentTheme === 'dark' || (!currentTheme && prefersDarkScheme.matches)) {
     body.classList.add('dark-mode');
 }
 
+function syncThemeControl() {
+    const dark = body.classList.contains('dark-mode');
+    themeToggle.setAttribute('aria-pressed', String(dark));
+    themeToggle.setAttribute('aria-label', dark ? 'Switch to light mode' : 'Switch to dark mode');
+    themeToggle.title = dark ? 'Switch to light mode' : 'Switch to dark mode';
+}
+syncThemeControl();
+
 // Toggle dark mode
 themeToggle.addEventListener('click', function(e) {
     e.preventDefault();
+    body.classList.add('theme-transition');
     body.classList.toggle('dark-mode');
+    syncThemeControl();
 
     // Save the current theme to localStorage
     if (body.classList.contains('dark-mode')) {
@@ -289,69 +306,35 @@ themeToggle.addEventListener('click', function(e) {
     }
 });
 
-// Music player functionality
+// Music starts only when the visitor asks for it.
 document.addEventListener('DOMContentLoaded', function() {
     const audio = document.getElementById('bg-audio');
     const toggleBtn = document.getElementById('toggle-music');
-    let isPlaying = false;
-
-    // Try to autoplay music on page load
-    const musicEnabled = localStorage.getItem('musicEnabled');
-    if (musicEnabled === null || musicEnabled === 'true') {
-        // Attempt to play music immediately
-        setTimeout(() => {
-            toggleMusic(true);
-        }, 1000); // Small delay to ensure DOM is ready
-    }
-
-    toggleBtn.addEventListener('click', function(e) {
-        e.preventDefault();
-        e.stopPropagation(); // Prevent any default behavior
-        trackAnalyticsEvent('music_button_click', {
-            requested_state: isPlaying ? 'paused' : 'playing'
-        });
-        toggleMusic(!isPlaying);
-    });
-
-    function toggleMusic(shouldPlay) {
-        if (shouldPlay) {
-            audio.play()
-                .then(() => {
-                    isPlaying = true;
-                    document.body.classList.add('music-playing');
-                    localStorage.setItem('musicEnabled', 'true');
-                    trackAnalyticsEvent('music_toggle', { state: 'playing' });
-                })
-                .catch(e => {
-                    console.log("Audio play prevented by browser policy:", e);
-                    // If autoplay fails, wait for user interaction
-                    if (!isPlaying) {
-                        document.body.addEventListener('click', function enableMusicOnInteraction() {
-                            audio.play()
-                                .then(() => {
-                                    isPlaying = true;
-                                    document.body.classList.add('music-playing');
-                                    localStorage.setItem('musicEnabled', 'true');
-                                })
-                                .catch(err => console.log("Still blocked:", err));
-                            document.body.removeEventListener('click', enableMusicOnInteraction);
-                        }, { once: true });
-                    }
-                    isPlaying = false;
-                    document.body.classList.remove('music-playing');
-                    localStorage.setItem('musicEnabled', 'false');
-                });
-        } else {
-            audio.pause();
-            isPlaying = false;
-            document.body.classList.remove('music-playing');
-            localStorage.setItem('musicEnabled', 'false');
-            trackAnalyticsEvent('music_toggle', { state: 'paused' });
-        }
-    }
-
-    // Set initial volume to a comfortable level
     audio.volume = 0.3;
+
+    function syncMusicControl() {
+        const playing = !audio.paused;
+        document.body.classList.toggle('music-playing', playing);
+        toggleBtn.setAttribute('aria-pressed', String(playing));
+        toggleBtn.setAttribute('aria-label', playing ? 'Pause background music' : 'Play background music');
+        toggleBtn.title = playing ? 'Pause background music' : 'Play background music';
+    }
+    audio.addEventListener('play', syncMusicControl);
+    audio.addEventListener('pause', syncMusicControl);
+    toggleBtn.addEventListener('click', async () => {
+        toggleBtn.disabled = true;
+        try {
+            if (audio.paused) await audio.play();
+            else audio.pause();
+            trackAnalyticsEvent('music_toggle', { state: audio.paused ? 'paused' : 'playing' });
+        } catch {
+            toggleBtn.title = 'Music could not play. Try again.';
+            toggleBtn.setAttribute('aria-label', toggleBtn.title);
+        } finally {
+            toggleBtn.disabled = false;
+        }
+    });
+    syncMusicControl();
 });
 
 // Spotify now-playing widget
