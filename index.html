@@ -7,10 +7,26 @@
     <title>Atharv Jairath</title>
     <link rel="icon" href="assets/images/favicon.svg" type="image/svg+xml">
     <link rel="shortcut icon" href="assets/images/favicon.svg" type="image/svg+xml">
-    <link rel="stylesheet" href="assets/css/styles.css?v=7">
+    <meta name="description" content="Atharv Jairath — Machine Learning Engineer working on NLP, computer vision, and search.">
+    <meta property="og:title" content="Atharv Jairath">
+    <meta property="og:description" content="Machine Learning Engineer working on NLP, computer vision, and search.">
+    <meta property="og:image" content="https://atharvjairath-gatech.github.io/assets/images/portrait-poster.jpg">
+    <meta property="og:url" content="https://atharvjairath-gatech.github.io/">
+    <meta name="twitter:card" content="summary_large_image">
+    <link rel="preload" as="image" href="assets/images/portrait-poster.jpg" fetchpriority="high">
+    <link rel="stylesheet" href="assets/css/styles.css?v=8">
 </head>
 
 <body>
+    <script>
+        // Apply the saved/OS theme before first paint so dark-mode visitors don't see a white flash.
+        try {
+            var t = localStorage.getItem('theme');
+            if (t === 'dark' || (!t && matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.body.classList.add('dark-mode');
+            }
+        } catch (e) {}
+    </script>
     <a class="skip-link" href="#intro">Skip to content</a>
     <!-- Navigation -->
     <nav id="navbar" aria-label="Main navigation">
@@ -142,7 +158,12 @@
                         <h1>Hey, I'm Atharv! <span class="hello-wave" aria-hidden="true">👋</span></h1>
                         <div class="intro-mobile-gif">
                             <div class="portrait-stars" aria-hidden="true"><span>✧</span><span>✦</span></div>
-                            <img src="assets/images/ascii.gif" alt="Atharv as ASCII art" class="right-gif">
+                            <video class="right-gif portrait-video" autoplay muted loop playsinline preload="metadata"
+                                poster="assets/images/portrait-poster.jpg" width="640" height="360"
+                                aria-label="Atharv as ASCII art">
+                                <source src="assets/images/portrait.webm" type="video/webm">
+                                <source src="assets/images/portrait.mp4" type="video/mp4">
+                            </video>
                         </div>
                         <p>I'm a Machine Learning Engineer who's been building AI for 3+ years. I love creating
                             things
@@ -152,8 +173,9 @@
                             tackle next.</p>
                         <div class="social-links">
                             <a href="https://www.linkedin.com/in/atharv-jairath-99aa78118/" target="_blank"
-                                class="social-link">LinkedIn</a>
-                            <a href="https://twitter.com/atharv_jairath" target="_blank" class="social-link">Twitter</a>
+                                rel="noopener" class="social-link">LinkedIn</a>
+                            <a href="https://github.com/atharvjairath" target="_blank" rel="noopener" class="social-link">GitHub</a>
+                            <a href="https://twitter.com/atharv_jairath" target="_blank" rel="noopener" class="social-link">Twitter</a>
                             <a href="assets/documents/Atharv_Jairath_Resume_ML__2026.pdf" download
                                 class="social-link">Download Resume</a>
                         </div>
@@ -175,7 +197,12 @@
                     </div>
                     <div class="intro-right-gif">
                         <div class="portrait-stars" aria-hidden="true"><span>✧</span><span>✦</span><span>✧</span></div>
-                        <img src="assets/images/ascii.gif" alt="Atharv as ASCII art" class="right-gif">
+                        <video class="right-gif portrait-video" autoplay muted loop playsinline preload="metadata"
+                            poster="assets/images/portrait-poster.jpg" width="640" height="360"
+                            aria-label="Atharv as ASCII art">
+                            <source src="assets/images/portrait.webm" type="video/webm">
+                            <source src="assets/images/portrait.mp4" type="video/mp4">
+                        </video>
                     </div>
                 </div>
             </div>
@@ -261,7 +288,7 @@
                             <div class="timeline-company">Firi</div>
                         </div>
                     </div>
-                    <div class="timeline-location">Bangalore, India</div>
+                    <div class="timeline-location">Gurgaon, India</div>
                     <ul>
                         <li>Do ML end-to-end — data → training → deployment → monitoring</li>
                         <li>Trained a ModernBERT-based ML parser hitting ~97% micro-precision on mapping user queries →
@@ -498,10 +525,10 @@
                 <div class="hobby-card">
                     <h3 class="hobby-title">Away from the keyboard</h3>
                     <ul>
-                        <li>I love playing badminton! If you're around the Bangalore HSR area and want to play, hit me
-                            up-I'd love to connect.</li>
+                        <li>I love playing badminton! If you're around Gurgaon and want to play, hit me
+                            up — I'd love to connect.</li>
                         <li>Lately, I've been trying to hit the gym as much as I can to stay active.</li>
-                        <li>You'll also find me playing Valorant (diamond rank no dereanked to plat) or PUBG PC when I'm
+                        <li>You'll also find me playing Valorant (was Diamond, now deranked to Plat) or PUBG PC when I'm
                             looking to unwind.
                         </li>
                     </ul>
@@ -558,13 +585,27 @@
         <a href="#intro">Back to top <span aria-hidden="true">↑</span></a>
     </footer>
 
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="assets/js/supabase-config.js"></script>
-    <script src="assets/js/analytics-config.js"></script>
-    <script src="assets/js/script.js?v=5"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.4/dist/umd/supabase.js"></script>
+    <script defer src="assets/js/supabase-config.js"></script>
+    <script defer src="assets/js/analytics-config.js"></script>
+    <script defer src="assets/js/script.js?v=6"></script>
     <script>
+        // Portrait video: respect reduced-motion and only decode the copy that's actually visible.
+        (function () {
+            const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+            const videos = document.querySelectorAll('.portrait-video');
+            const sync = () => videos.forEach(v => {
+                const visible = v.offsetParent !== null;
+                if (reduce.matches || !visible) v.pause();
+                else v.play().catch(() => {});
+            });
+            sync();
+            window.addEventListener('resize', sync);
+            reduce.addEventListener?.('change', sync);
+        })();
+
         // Reactive ASCII cat: follows the cursor, blinks, and celebrates events.
-        document.addEventListener('DOMContentLoaded', function () {
+        (function () {
             const catContainers = document.querySelectorAll('.ascii-cat');
             if (!catContainers.length) return;
 
@@ -665,16 +706,19 @@
                     }, 1400);
                 });
             };
-        });
+        })();
 
-        // Typewriter effect for the hero intro line.
-        document.addEventListener('DOMContentLoaded', function () {
+        // Typewriter effect for the hero intro line. Runs immediately (not on DOMContentLoaded)
+        // so the paragraph doesn't render in full and then vanish once the deferred scripts finish.
+        (function () {
             const target = document.querySelector('#intro .intro-text p');
             if (!target) return;
 
             const fullText = target.textContent.trim().replace(/\s+/g, ' ');
             const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+            // Reserve the finished height so the content below doesn't jump while typing.
+            target.style.minHeight = target.offsetHeight + 'px';
             target.classList.add('typewriter');
             const textNode = document.createElement('span');
             const caret = document.createElement('span');
@@ -686,6 +730,7 @@
             if (reduceMotion) {
                 textNode.textContent = fullText;
                 target.classList.add('tw-done');
+                target.style.minHeight = '';
                 return;
             }
 
@@ -698,10 +743,11 @@
                     setTimeout(step, 18 + Math.random() * 45);
                 } else {
                     target.classList.add('tw-done');
+                    target.style.minHeight = '';
                 }
             };
             setTimeout(step, 350);
-        });
+        })();
     </script>
 </body>
 

@@ -512,6 +512,8 @@ h2 {
 }
 
 .right-gif {
+    display: block;
+    background: var(--surface);
     width: 100%;
     max-width: 560px;
     aspect-ratio: 16 / 9;

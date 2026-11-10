@@ -468,7 +468,13 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     loadNowPlaying();
-    setInterval(loadNowPlaying, 30000);
+    // Don't keep polling Supabase while the tab is in the background.
+    setInterval(() => {
+        if (!document.hidden) loadNowPlaying();
+    }, 30000);
+    document.addEventListener('visibilitychange', () => {
+        if (!document.hidden) loadNowPlaying();
+    });
 });
 
 // Supabase guestbook and visit counter
