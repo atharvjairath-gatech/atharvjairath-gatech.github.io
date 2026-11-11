@@ -14,7 +14,7 @@
     <meta property="og:url" content="https://atharvjairath-gatech.github.io/">
     <meta name="twitter:card" content="summary_large_image">
     <link rel="preload" as="image" href="assets/images/portrait-poster.jpg" fetchpriority="high">
-    <link rel="stylesheet" href="assets/css/styles.css?v=8">
+    <link rel="stylesheet" href="assets/css/styles.css?v=9">
 </head>
 
 <body>
@@ -43,14 +43,14 @@
                 </a>
             </li>
             <li>
-                <a href="#writing" class="nav-link" aria-label="Writing">
+                <a href="#experience" class="nav-link" aria-label="Experience">
                     <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
                         fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                         stroke-linejoin="round">
-                        <path d="M12 7v14" />
-                        <path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z" />
+                        <rect width="20" height="14" x="2" y="7" rx="2" ry="2" />
+                        <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
                     </svg>
-                    <span class="nav-text">Writing</span>
+                    <span class="nav-text">Experience</span>
                 </a>
             </li>
             <li>
@@ -66,14 +66,14 @@
                 </a>
             </li>
             <li>
-                <a href="#experience" class="nav-link" aria-label="Experience">
+                <a href="#writing" class="nav-link" aria-label="Writing">
                     <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
                         fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                         stroke-linejoin="round">
-                        <rect width="20" height="14" x="2" y="7" rx="2" ry="2" />
-                        <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
+                        <path d="M12 7v14" />
+                        <path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z" />
                     </svg>
-                    <span class="nav-text">Experience</span>
+                    <span class="nav-text">Writing</span>
                 </a>
             </li>
             <li>
@@ -176,6 +176,7 @@
                                 rel="noopener" class="social-link">LinkedIn</a>
                             <a href="https://github.com/atharvjairath" target="_blank" rel="noopener" class="social-link">GitHub</a>
                             <a href="https://twitter.com/atharv_jairath" target="_blank" rel="noopener" class="social-link">Twitter</a>
+                            <a href="mailto:atharv.jairath@gmail.com" class="social-link">Email</a>
                             <a href="assets/documents/Atharv_Jairath_Resume_ML__2026.pdf" download
                                 class="social-link">Download Resume</a>
                         </div>
@@ -204,69 +205,6 @@
                             <source src="assets/images/portrait.mp4" type="video/mp4">
                         </video>
                     </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Writing Section -->
-    <section id="writing" class="section">
-        <div class="container">
-            <div class="section-header-row">
-                <h2>Writing</h2>
-            </div>
-            <div class="writing-list">
-                <a href="https://medium.com/@atharv.jairath/the-strawberry-problem-is-hard-for-llms-51c0c02ccbde"
-                    target="_blank" rel="noopener" class="writing-card"
-                    aria-label="Read The Strawberry Problem Is Hard for LLMs on Medium">
-                    <div class="writing-meta">
-                        <span>Medium</span>
-                        <span>4 min read</span>
-                    </div>
-                    <h3 class="writing-title">The Strawberry Problem Is Hard for LLMs</h3>
-                    <p class="writing-description">A short breakdown of why simple character-counting tasks can still trip up language models, and what that says about tokenization, prediction, and engineered reliability.</p>
-                    <div class="writing-tags" aria-label="Topics">
-                        <span>LLM</span>
-                        <span>Transformers</span>
-                        <span>Deep Learning</span>
-                        <span>AI</span>
-                    </div>
-                </a>
-            </div>
-        </div>
-    </section>
-
-    <!-- Projects Section -->
-    <section id="projects" class="section">
-        <div class="container">
-            <h2>Projects</h2>
-            <div class="projects-grid">
-                <div class="project-card">
-                    <h3 class="project-title">Grammatical Error Correction Model with Dynamic Context Learning</h3>
-                    <p class="project-description">Used BERT model to learn optimal splits within the paragraph/document
-                        ensuring maximal contextual information is preserved in the resulting chunks. Achieved an
-                        improvement of 77%, 19.61%, and 10.49% F0.5 score on CoNLL-2014, BEA-Dev, and FCE-Test datasets
-                        respectively from current SOTA models. Paper accepted at BDA 2023.</p>
-                </div>
-
-                <div class="project-card">
-                    <h3 class="project-title">Glycosylated Hemoglobin Prediction</h3>
-                    <p class="project-description">Introduced an optimized weighted ensemble model that predicts the
-                        risk of Type 2 Diabetes. Worked on improving the performance by developing custom cost function
-                        for weights. Technologies: Scikit-learn, Seaborn, Ensemble Learning, SciPy.</p>
-                </div>
-
-                <div class="project-card">
-                    <h3 class="project-title">AI Image Caption Generator</h3>
-                    <p class="project-description">Developed an Encoder-Decoder model using CNN and LSTM to generate
-                        captions from an image. Encoded Images using InceptionV3 model and words using GloVe.
-                        Technologies: Keras, CNN, LSTM, GloVe, Transfer learning.</p>
-                </div>
-
-                <div class="project-card">
-                    <h3 class="project-title">Smart India Hackathon Winner 2022</h3>
-                    <p class="project-description">Won Smart India Hackathon 2022 against the problem statement KK1182
-                        (Shared usage of workshops/labs across india) held at IIT Guwahati.</p>
                 </div>
             </div>
         </div>
@@ -381,7 +319,7 @@
                     <ul>
                         <li>Built a global identity verification system using DBNet to spot the right documents every
                             time</li>
-                        <li>Slashed latency by 147% and cut GPU usage in half through some serious pipeline tuning</li>
+                        <li>Made the pipeline ~2.5× faster and cut GPU usage in half through some serious pipeline tuning</li>
                     </ul>
                 </div>
 
@@ -444,6 +382,75 @@
                 </div>
                     </div>
                 </details>
+            </div>
+        </div>
+    </section>
+
+    <!-- Projects Section -->
+    <section id="projects" class="section">
+        <div class="container">
+            <h2>Projects</h2>
+            <div class="projects-grid">
+                <div class="project-card">
+                    <h3 class="project-title">Grammatical Error Correction Model with Dynamic Context Learning</h3>
+                    <p class="project-description">Used BERT model to learn optimal splits within the paragraph/document
+                        ensuring maximal contextual information is preserved in the resulting chunks. Achieved an
+                        improvement of 77%, 19.61%, and 10.49% F0.5 score on CoNLL-2014, BEA-Dev, and FCE-Test datasets
+                        respectively from current SOTA models. Paper accepted at BDA 2023.</p>
+                    <a href="https://doi.org/10.1007/978-3-031-49601-1_7" target="_blank" rel="noopener"
+                        class="project-link">Read the paper <span aria-hidden="true">↗</span></a>
+                </div>
+
+                <div class="project-card">
+                    <h3 class="project-title">Glycosylated Hemoglobin Prediction</h3>
+                    <p class="project-description">Introduced an optimized weighted ensemble model that predicts the
+                        risk of Type 2 Diabetes. Worked on improving the performance by developing custom cost function
+                        for weights. Technologies: Scikit-learn, Seaborn, Ensemble Learning, SciPy.</p>
+                    <a href="https://github.com/atharvjairath/Glycosylated-hemoglobin-prediction" target="_blank"
+                        rel="noopener" class="project-link">View on GitHub <span aria-hidden="true">↗</span></a>
+                </div>
+
+                <div class="project-card">
+                    <h3 class="project-title">AI Image Caption Generator</h3>
+                    <p class="project-description">Developed an Encoder-Decoder model using CNN and LSTM to generate
+                        captions from an image. Encoded Images using InceptionV3 model and words using GloVe.
+                        Technologies: Keras, CNN, LSTM, GloVe, Transfer learning.</p>
+                    <a href="https://github.com/atharvjairath/AI-Image-Caption-Generator" target="_blank"
+                        rel="noopener" class="project-link">View on GitHub <span aria-hidden="true">↗</span></a>
+                </div>
+
+                <div class="project-card">
+                    <h3 class="project-title">Smart India Hackathon Winner 2022</h3>
+                    <p class="project-description">Won Smart India Hackathon 2022 against the problem statement KK1182
+                        (Shared usage of workshops/labs across india) held at IIT Guwahati.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Writing Section -->
+    <section id="writing" class="section">
+        <div class="container">
+            <div class="section-header-row">
+                <h2>Writing</h2>
+            </div>
+            <div class="writing-list">
+                <a href="https://medium.com/@atharv.jairath/the-strawberry-problem-is-hard-for-llms-51c0c02ccbde"
+                    target="_blank" rel="noopener" class="writing-card"
+                    aria-label="Read The Strawberry Problem Is Hard for LLMs on Medium">
+                    <div class="writing-meta">
+                        <span>Medium</span>
+                        <span>4 min read</span>
+                    </div>
+                    <h3 class="writing-title">The Strawberry Problem Is Hard for LLMs</h3>
+                    <p class="writing-description">A short breakdown of why simple character-counting tasks can still trip up language models, and what that says about tokenization, prediction, and engineered reliability.</p>
+                    <div class="writing-tags" aria-label="Topics">
+                        <span>LLM</span>
+                        <span>Transformers</span>
+                        <span>Deep Learning</span>
+                        <span>AI</span>
+                    </div>
+                </a>
             </div>
         </div>
     </section>
