@@ -226,16 +226,24 @@
                             <div class="timeline-company">Firi</div>
                         </div>
                     </div>
-                    <div class="timeline-location">Gurgaon, India</div>
+                    <div class="timeline-location">Gurugram, India</div>
                     <ul>
-                        <li>Do ML end-to-end — data → training → deployment → monitoring</li>
-                        <li>Trained a ModernBERT-based ML parser hitting ~97% micro-precision on mapping user queries →
-                            Elasticsearch parameters</li>
-                        <li>Built a GPT-4o powered review analysis pipeline (fetch, clean, summarize, insights on
-                            product pages)</li>
-                        <li>Built AI smart search + product recommendations with a multi-agent setup (Elasticsearch +
-                            semantic search + Cohere rerank + RRF + LangGraph)</li>
-                        <li>Basically turning messy user text into clean signals and making search actually smart</li>
+                        <li>As Firi’s sole ML engineer, own model development, evaluation, deployment, and production
+                            operations for search, recommendations, and review intelligence.</li>
+                        <li>Built Consensus, an LLM pipeline for a 70M-review corpus that matches reviews to products
+                            and variants and publishes evidence-backed summaries and sentiment scores.</li>
+                        <li>Fine-tuned and deployed a ModernBERT query parser and rebuilt Elasticsearch ranking around
+                            shopper intent, ingredients, and review evidence. In offline evaluations, nDCG@10 rose
+                            from 0.71 to 0.88 across 602 general queries, and exact-product Hit@10 rose from 64.9% to
+                            70.2% across 94 named-product queries.</li>
+                        <li>Built a LangGraph shopping agent that plans queries, searches Elasticsearch, and researches
+                            ingredients in parallel. Used dense and sparse retrieval in Qdrant to ground recommendations
+                            in review evidence.</li>
+                        <li>Cut benchmarked p95 search latency by 68% (933 ms to 303 ms) by replacing scripted
+                            Elasticsearch facets with native aggregations, preserving counts across 92 validation queries.</li>
+                        <li>Cut benchmarked attribute extraction cost by about 90% ($6.89 to $0.62 per 1,000 requests)
+                            by switching to a lower-cost LLM. Reworked prompts to cache shared instructions, achieving
+                            86% input-token cache reuse on Reddit inputs.</li>
                     </ul>
                 </div>
 
